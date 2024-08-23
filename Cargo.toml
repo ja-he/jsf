@@ -1,0 +1,23 @@
+[package]
+name = "jsf"
+version = "0.1.0"
+edition = "2021"
+authors = [
+  "Jan Hensel <ceo@dubious.engineering>",
+]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/ja-he/jsf"
+homepage = "https://hensel.dev/projects/jsf/"
+description = """
+JSON Signature Format (JSF) helpers.
+(Extremely early, experimental stage, essentially not to be used yet!)
+"""
+
+[dependencies]
+anyhow = "1.0.86"
+base64 = "0.22.1"
+p256 = { version = "0.13.2", features = ["jwk", "serde"] }
+serde = { version = "1.0.208", features = ["derive"] }
+serde_json = "1.0.127"
+tracing = "0.1.40"
