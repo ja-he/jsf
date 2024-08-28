@@ -165,7 +165,7 @@ pub fn sign_json_object_str(
 }
 
 #[tracing::instrument(skip(input, signature_object_key))]
-pub fn validate_json_object_str(input: &str, signature_object_key: &str) -> anyhow::Result<bool> {
+pub fn verify_json_object_str(input: &str, signature_object_key: &str) -> anyhow::Result<bool> {
     let input_value: serde_json::Value =
         serde_json::from_str(input).with_context(|| "Failed to parse input")?;
 
@@ -225,5 +225,54 @@ pub fn validate_json_object_str(input: &str, signature_object_key: &str) -> anyh
                 Err(_) => Ok(false),
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_sign_and_verify() {
+        let input = r#"{"key": "value"}"#;
+        let signature_object_key = "signature";
+        let algorithm = JwkAlgorithm::ES256;
+        let private_key_jwk_str = r#"
+        {
+            "kty": "EC",
+            "crv": "P-256",
+            "x": "MKBCTNIcKUSDii11ySs3526iDZ8AiTo7Tu6KPAqv7D4",
+            "y": "4Etl6SRW2YiLUrN5vfvVHuhp7x8PxltmWWlbbM4IFyM",
+            "d": "870MB6gfuTJ4HtUnUvYMyJpr5eUZNP4Bk43bVdj3eAE"
+        }"#;
+
+        let signed_object =
+            sign_json_object_str(input, signature_object_key, algorithm, private_key_jwk_str)
+                .unwrap();
+        println!("have signed object: {signed_object}");
+
+        let good = verify_json_object_str(&signed_object, signature_object_key).unwrap();
+        assert!(good, "Signature verification failed");
+    }
+
+    #[test]
+    fn test_verify_good_signature() {
+        let input = r#"{"key":"value","signature":{"algorithm":"ES256","publicKey":{"crv":"P-256","kty":"EC","x":"MKBCTNIcKUSDii11ySs3526iDZ8AiTo7Tu6KPAqv7D4","y":"4Etl6SRW2YiLUrN5vfvVHuhp7x8PxltmWWlbbM4IFyM"},"value":"rcwOXiwYpd_BBrFE0BSGYjV3HBzeqeuTAIar8zVVw-Ir0fI8q8JzryU72l0_AZFiu5-hpfcVmBHs6pHFJqL6KA"}}"#;
+        let signature_object_key = "signature";
+
+        let good = verify_json_object_str(input, signature_object_key).unwrap();
+        assert!(good, "Good signature not correctly verified");
+    }
+
+    #[test]
+    fn test_verify_bad_signature() {
+        let input = r#"{"key":"value","signature":{"algorithm":"ES256","publicKey":{"crv":"P-256","kty":"EC","x":"MKBCTNIcKUSDii11ySs3526iDZ8AiTo7Tu6KPAqv7D4","y":"4Etl6SRW2YiLUrN5vfvVHuhp7x8PxltmWWlbbM4IFyM"},"value":"ffffffffff_BBrFE0BSGYjV3HBzeqeuTAIar8zVVw-Ir0fI8q8JzryU72l0_AZFiu5-hpfcVmBHs6pHFJqL6KA"}}"#;
+        let signature_object_key = "signature";
+
+        let good = verify_json_object_str(input, signature_object_key).unwrap();
+        assert!(
+            !good,
+            "bad signature not correctly identified as bad in verification"
+        );
     }
 }
