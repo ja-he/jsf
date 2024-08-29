@@ -27,14 +27,14 @@ jobs:
       - name: 'Check code formatting'
         run: cargo fmt --check
 
-  lint:
+  check-and-lint:
     strategy:
       fail-fast: false
       matrix:
         # Get early warning of new lints which are regularly introduced in beta channels.
         toolchain: [stable, beta]
     runs-on: ubuntu-latest
-    name: ${{ matrix.toolchain }} / clippy
+    name: Check and Lint (${{ matrix.toolchain }})
     permissions:
       contents: read
       checks: write
