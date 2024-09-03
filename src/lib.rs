@@ -19,15 +19,25 @@ pub enum Signature {
     },
 }
 
+type PublicKey = Key;
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Key {
+    pub kid: Option<String>,
+    #[serde(flatten)]
+    pub inner_key: KeyInner,
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(tag = "kty")]
-pub enum PublicKey {
+pub enum KeyInner {
     #[serde(rename = "EC")]
     EC {
         #[serde(rename = "crv")]
         curve: EllipticCurve,
         x: Base64Url,
         y: Base64Url,
+        d: Option<Base64Url>,
     },
 }
 
@@ -83,20 +93,51 @@ pub fn sign_json_object_str(
         return Err(anyhow::anyhow!("Expected object"));
     };
 
-    let private_key = p256::SecretKey::from_jwk_str(private_key_jwk_str)
-        .with_context(|| "Failed to parse private key")?;
+    let private_key_jwk: Key = serde_json::from_str(private_key_jwk_str)
+        .with_context(|| format!("could not parse private key '{private_key_jwk_str}'"))?;
+    let kid = private_key_jwk.kid.clone();
+    let simplified_ec_key_jwk_str = {
+        tracing::debug!("starting key adjustment with {:?}", private_key_jwk);
+        let serde_json::Value::Object(mut m) = serde_json::to_value(private_key_jwk)
+            .with_context(|| "could not serialize private key (internal processing)")?
+        else {
+            return Err(anyhow::anyhow!(
+                "did not find a key object (but some other JSON type)",
+            ));
+        };
+        tracing::debug!("got map {:?}", m);
+        if kid.is_some() {
+            m.remove("kid");
+        }
+        tracing::debug!("have map w/o kid {:?}", m);
+        serde_json::to_string(&serde_json::Value::Object(m))
+            .with_context(|| "could not serialize simplified private key")?
+    };
+    let private_key =
+        p256::SecretKey::from_jwk_str(&simplified_ec_key_jwk_str).with_context(|| {
+            format!("failed to parse private key (from '{simplified_ec_key_jwk_str}')")
+        })?;
     let partial_signature_object = {
         let p256_public_key = private_key.public_key();
-        let public_key =
-            PublicKey::try_from(p256_public_key).with_context(|| "failed to convert public key")?;
-        match (&algorithm, &public_key) {
-            (JwkAlgorithm::ES256, PublicKey::EC { .. }) => {}
+        let public_key = {
+            let mut pk = PublicKey::try_from(p256_public_key)
+                .with_context(|| "failed to convert public key")?;
+            if let Some(kid) = kid {
+                pk.kid = Some(kid.to_string());
+            }
+            pk
+        };
+
+        // check key
+        match (&algorithm, &public_key.inner_key) {
+            (JwkAlgorithm::ES256, KeyInner::EC { .. }) => {}
             _ => {
                 return Err(anyhow::anyhow!(
                     "unsupported combination of algorithm and public key type"
                 ))
             }
         }
+
         let s = Signature::Core {
             algorithm,
             public_key,
@@ -209,8 +250,32 @@ pub fn verify_json_object_str(input: &str, signature_object_key: &str) -> anyhow
                 .with_context(|| "Failed to serialize public key")?;
             tracing::debug!("Algorithm: {algorithm}");
 
-            let pk = p256::PublicKey::from_jwk_str(&jwk_str)
-                .with_context(|| "Failed to parse public key")?;
+            let pk: p256::PublicKey = {
+                let key: Key = serde_json::from_str(&jwk_str)
+                    .with_context(|| format!("could not parse private key '{jwk_str}'"))?;
+
+                let kid = key.kid.clone();
+                let simplified_str = {
+                    let serde_json::Value::Object(mut m) = serde_json::to_value(key)
+                        .with_context(|| "could not serialize key (internal processing)")?
+                    else {
+                        return Err(anyhow::anyhow!(
+                            "did not find a key object (but some other JSON type)",
+                        ));
+                    };
+                    tracing::debug!("got map {:?}", m);
+                    if kid.is_some() {
+                        m.remove("kid");
+                    }
+                    tracing::debug!("have map w/o kid {:?}", m);
+                    serde_json::to_string(&serde_json::Value::Object(m))
+                        .with_context(|| "could not serialize simplified key")?
+                };
+
+                p256::PublicKey::from_jwk_str(&simplified_str)
+                    .with_context(|| "Failed to parse public key")?
+            };
+
             let verify_key = p256::ecdsa::VerifyingKey::from(&pk);
 
             let sig_value_b64url = &value;
