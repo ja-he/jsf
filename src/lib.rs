@@ -38,6 +38,7 @@ pub enum KeyInner {
         curve: EllipticCurve,
         x: Base64Url,
         y: Base64Url,
+        #[serde(skip_serializing_if = "Option::is_none")]
         d: Option<Base64Url>,
     },
 }
