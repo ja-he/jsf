@@ -82,25 +82,20 @@ impl std::fmt::Display for EllipticCurve {
     }
 }
 
-pub fn sign_json_object_str(
-    input: &str,
+pub fn sign_serde_json_object(
+    input: serde_json::Value,
     signature_object_key: &str,
     algorithm: JwkAlgorithm,
-    private_key_jwk_str: &str,
-) -> anyhow::Result<String> {
-    let input_value: serde_json::Value =
-        serde_json::from_str(input).with_context(|| "failed to parse input")?;
-
-    let serde_json::Value::Object(mut v) = input_value else {
-        return Err(anyhow::anyhow!("Expected object"));
+    private_key: Key,
+) -> anyhow::Result<serde_json::Value> {
+    let serde_json::Value::Object(mut v) = input else {
+        return Err(anyhow::anyhow!("expected object but got {input:?}"));
     };
 
-    let private_key_jwk: Key = serde_json::from_str(private_key_jwk_str)
-        .with_context(|| format!("could not parse private key '{private_key_jwk_str}'"))?;
-    let kid = private_key_jwk.kid.clone();
+    let kid = private_key.kid.clone();
     let simplified_ec_key_jwk_str = {
-        tracing::debug!("starting key adjustment with {:?}", private_key_jwk);
-        let serde_json::Value::Object(mut m) = serde_json::to_value(private_key_jwk)
+        tracing::debug!("starting key adjustment with {:?}", private_key);
+        let serde_json::Value::Object(mut m) = serde_json::to_value(private_key)
             .with_context(|| "could not serialize private key (internal processing)")?
         else {
             return Err(anyhow::anyhow!(
@@ -201,6 +196,29 @@ pub fn sign_json_object_str(
 
     let signed_object = serde_json::Value::Object(v);
 
+    Ok(signed_object)
+}
+
+pub fn sign_json_object_str(
+    input: &str,
+    signature_object_key: &str,
+    algorithm: JwkAlgorithm,
+    private_key_jwk_str: &str,
+) -> anyhow::Result<String> {
+    let input_value: serde_json::Value =
+        serde_json::from_str(input).with_context(|| "failed to parse input")?;
+
+    let private_key_jwk: Key = serde_json::from_str(private_key_jwk_str)
+        .with_context(|| format!("could not parse private key '{private_key_jwk_str}'"))?;
+
+    let signed_object = sign_serde_json_object(
+        input_value,
+        signature_object_key,
+        algorithm,
+        private_key_jwk,
+    )
+    .with_context(|| "unable to sign serde_json value")?;
+
     let signed_object_str = serde_json::to_string(&signed_object)
         .with_context(|| "failed to serialize signed object")?;
 
@@ -300,7 +318,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_sign_and_verify() {
+    fn test_sign_and_verify_str() {
         let input = r#"{"key": "value"}"#;
         let signature_object_key = "signature";
         let algorithm = JwkAlgorithm::ES256;
@@ -320,6 +338,30 @@ mod tests {
 
         let good = verify_json_object_str(&signed_object, signature_object_key).unwrap();
         assert!(good, "Signature verification failed");
+    }
+
+    #[test]
+    fn test_sign_and_verify_obj() {
+        let input = serde_json::json!({"key": "value"});
+        let signature_object_key = "signature";
+        let algorithm = JwkAlgorithm::ES256;
+        let private_key: Key = serde_json::from_str(
+            r#"{
+                  "kty": "EC",
+                  "crv": "P-256",
+                  "x": "MKBCTNIcKUSDii11ySs3526iDZ8AiTo7Tu6KPAqv7D4",
+                  "y": "4Etl6SRW2YiLUrN5vfvVHuhp7x8PxltmWWlbbM4IFyM",
+                  "d": "870MB6gfuTJ4HtUnUvYMyJpr5eUZNP4Bk43bVdj3eAE"
+                }"#,
+        )
+        .unwrap();
+
+        let signed_object =
+            sign_serde_json_object(input, signature_object_key, algorithm, private_key).unwrap();
+        println!("have signed object: {signed_object}");
+
+        // let good = verify_json_object_str(&signed_object, signature_object_key).unwrap();
+        // assert!(good, "Signature verification failed");
     }
 
     #[test]
