@@ -8,11 +8,17 @@ use base64::prelude::*;
 
 type Base64Url = String;
 
+/// Base64URL-encoded [RFC4648] binary data.
+type DataTypeBinaryData = Base64Url;
+
+/// Base64URL-encoded positive integer with arbitrary precision. Note that the value must not contain leading zero-valued bytes.
+type DataTypeCrypto = Base64Url;
+
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(untagged)]
 pub enum Signature {
     Core {
-        algorithm: JwkAlgorithm,
+        algorithm: SignatureAlgorithm,
         #[serde(rename = "publicKey")]
         public_key: PublicKey,
         value: Base64Url,
@@ -29,17 +35,57 @@ pub struct Key {
     pub inner_key: KeyInner,
 }
 
+/// Key type indicator. Currently the following types are recognized:
+///
+///  - EC     See: [Additional EC Properties](https://cyberphone.github.io/doc/security/jsf.html#Additional_EC_Properties)
+///  - OKP    See: [Additional OKP Properties](https://cyberphone.github.io/doc/security/jsf.html#Additional_OKP_Properties)
+///  - RSA    See: [Additional RSA Properties](https://cyberphone.github.io/doc/security/jsf.html#Additional_RSA_Properties)
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(tag = "kty")]
 pub enum KeyInner {
+    /// Elliptic Curve (EC)
     #[serde(rename = "EC")]
-    EC {
+    EllipticCurve {
+        /// EC curve name.
         #[serde(rename = "crv")]
-        curve: EllipticCurve,
-        x: Base64Url,
-        y: Base64Url,
+        curve: EcCurveName,
+
+        /// EC curve point X.
+        /// The length of this field must be the full size of a coordinate for the curve specified in the "crv" parameter.
+        /// For example, if the value of "crv" is "P-521", the decoded argument must be 66 bytes.
+        x: DataTypeBinaryData,
+
+        /// EC curve point Y.
+        /// The length of this field must be the full size of a coordinate for the curve specified in the "crv" parameter.
+        /// For example, if the value of "crv" is "P-256", the decoded argument must be 32 bytes.
+        y: DataTypeBinaryData,
+
         #[serde(skip_serializing_if = "Option::is_none")]
-        d: Option<Base64Url>,
+        d: Option<DataTypeBinaryData>,
+    },
+
+    /// Octet Key Pair (OKP)
+    #[serde(rename = "OKP")]
+    OctetKeyPair {
+        /// EdDSA curve name.
+        #[serde(rename = "crv")]
+        curve: EdDsaCurveName,
+
+        /// EdDSA curve point X.
+        /// The length of this field must be the full size of a coordinate for the curve specified in the "crv" parameter.
+        /// For example, if the value of "crv" is "Ed25519", the decoded argument must be 32 bytes.
+        x: DataTypeBinaryData,
+    },
+
+    /// RSA
+    Rsa {
+        /// RSA modulus. (aka `n`)
+        #[serde(rename = "n")]
+        modulus: DataTypeCrypto,
+
+        /// RSA exponent. (aka `e`)
+        #[serde(rename = "e")]
+        exponent: DataTypeCrypto,
     },
 }
 
@@ -53,31 +99,112 @@ impl TryFrom<p256::PublicKey> for PublicKey {
     }
 }
 
+/// EC curve name. The currently recognized EC curves include:
+///
+///  - P-256
+///  - P-384
+///  - P-521
+///
+/// Note: If proprietary curve names are added, they must be expressed as URIs.
 #[derive(Serialize, Deserialize, Debug)]
-pub enum EllipticCurve {
+pub enum EcCurveName {
     #[serde(rename = "P-256")]
     P256,
-    // TODO
+    #[serde(rename = "P-384")]
+    P384,
+    #[serde(rename = "P-521")]
+    P521,
 }
 
+/// EdDSA curve name. The currently recognized EdDSA curves include:
+///
+///  - Ed25519
+///  - Ed448
+///
+/// Note: If proprietary curve names are added, they must be expressed as URIs.
 #[derive(Serialize, Deserialize, Debug)]
-pub enum JwkAlgorithm {
-    ES256,
-    // TODO
+pub enum EdDsaCurveName {
+    Ed25519,
+    Ed448,
 }
 
-impl std::fmt::Display for JwkAlgorithm {
+/// Signature algorithm. The currently recognized JWA [RFC7518] and RFC8037 [RFC8037] asymmetric key algorithms include:
+///
+///  - RS256
+///  - RS384
+///  - RS512
+///  - PS256
+///  - PS384
+///  - PS512
+///  - ES256
+///  - ES384
+///  - ES512
+///  - Ed25519
+///  - Ed448
+///
+/// Note: Unlike RFC8037 [RFC8037] JSF requires explicit Ed* algorithm names instead of "EdDSA".
+/// The currently recognized JWA [RFC7518] symmetric key algorithms include:
+///
+///  - HS256
+///  - HS384
+///  - HS512
+///
+/// Note: If proprietary signature algorithms are added, they must be expressed as URIs.
+/// JWS counterpart: "alg".
+#[derive(Serialize, Deserialize, Debug)]
+pub enum SignatureAlgorithm {
+    RS256,
+    RS384,
+    RS512,
+    PS256,
+    PS384,
+    PS512,
+    ES256,
+    ES384,
+    ES512,
+    Ed25519,
+    Ed448,
+    HS256,
+    HS384,
+    HS512,
+}
+
+impl std::fmt::Display for SignatureAlgorithm {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            JwkAlgorithm::ES256 => write!(f, "ES256"),
+            SignatureAlgorithm::RS256 => write!(f, "RS256"),
+            SignatureAlgorithm::RS384 => write!(f, "RS384"),
+            SignatureAlgorithm::RS512 => write!(f, "RS512"),
+            SignatureAlgorithm::PS256 => write!(f, "PS256"),
+            SignatureAlgorithm::PS384 => write!(f, "PS384"),
+            SignatureAlgorithm::PS512 => write!(f, "PS512"),
+            SignatureAlgorithm::ES256 => write!(f, "ES256"),
+            SignatureAlgorithm::ES384 => write!(f, "ES384"),
+            SignatureAlgorithm::ES512 => write!(f, "ES512"),
+            SignatureAlgorithm::Ed25519 => write!(f, "Ed25519"),
+            SignatureAlgorithm::Ed448 => write!(f, "Ed448"),
+            SignatureAlgorithm::HS256 => write!(f, "HS256"),
+            SignatureAlgorithm::HS384 => write!(f, "HS384"),
+            SignatureAlgorithm::HS512 => write!(f, "HS512"),
         }
     }
 }
 
-impl std::fmt::Display for EllipticCurve {
+impl std::fmt::Display for EcCurveName {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            EllipticCurve::P256 => write!(f, "P-256"),
+            EcCurveName::P256 => write!(f, "P-256"),
+            EcCurveName::P384 => write!(f, "P-384"),
+            EcCurveName::P521 => write!(f, "P-521"),
+        }
+    }
+}
+
+impl std::fmt::Display for EdDsaCurveName {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            EdDsaCurveName::Ed25519 => write!(f, "Ed25519"),
+            EdDsaCurveName::Ed448 => write!(f, "Ed448"),
         }
     }
 }
@@ -85,7 +212,7 @@ impl std::fmt::Display for EllipticCurve {
 pub fn sign_serde_json_object(
     input: serde_json::Value,
     signature_object_key: &str,
-    algorithm: JwkAlgorithm,
+    algorithm: SignatureAlgorithm,
     private_key: Key,
 ) -> anyhow::Result<serde_json::Value> {
     let serde_json::Value::Object(mut v) = input else {
@@ -127,7 +254,7 @@ pub fn sign_serde_json_object(
 
         // check key
         match (&algorithm, &public_key.inner_key) {
-            (JwkAlgorithm::ES256, KeyInner::EC { .. }) => {}
+            (SignatureAlgorithm::ES256, KeyInner::EllipticCurve { .. }) => {}
             _ => {
                 return Err(anyhow::anyhow!(
                     "unsupported combination of algorithm and public key type"
@@ -202,7 +329,7 @@ pub fn sign_serde_json_object(
 pub fn sign_json_object_str(
     input: &str,
     signature_object_key: &str,
-    algorithm: JwkAlgorithm,
+    algorithm: SignatureAlgorithm,
     private_key_jwk_str: &str,
 ) -> anyhow::Result<String> {
     let input_value: serde_json::Value =
@@ -321,7 +448,7 @@ mod tests {
     fn test_sign_and_verify_str() {
         let input = r#"{"key": "value"}"#;
         let signature_object_key = "signature";
-        let algorithm = JwkAlgorithm::ES256;
+        let algorithm = SignatureAlgorithm::ES256;
         let private_key_jwk_str = r#"
         {
             "kty": "EC",
@@ -344,7 +471,7 @@ mod tests {
     fn test_sign_and_verify_obj() {
         let input = serde_json::json!({"key": "value"});
         let signature_object_key = "signature";
-        let algorithm = JwkAlgorithm::ES256;
+        let algorithm = SignatureAlgorithm::ES256;
         let private_key: Key = serde_json::from_str(
             r#"{
                   "kty": "EC",
