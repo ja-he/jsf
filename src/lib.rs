@@ -252,15 +252,7 @@ pub fn sign_serde_json_object(
             pk
         };
 
-        // check key
-        match (&algorithm, &public_key.inner_key) {
-            (SignatureAlgorithm::ES256, KeyInner::EllipticCurve { .. }) => {}
-            _ => {
-                return Err(anyhow::anyhow!(
-                    "unsupported combination of algorithm and public key type"
-                ))
-            }
-        }
+        validate_key(&algorithm, &public_key.inner_key).with_context(|| "Key not valid.")?;
 
         let s = Signature::Core {
             algorithm,
@@ -438,6 +430,34 @@ pub fn verify_json_object_str(input: &str, signature_object_key: &str) -> anyhow
             }
         }
     }
+}
+
+fn validate_key(algorithm: &SignatureAlgorithm, key: &KeyInner) -> anyhow::Result<()> {
+    match (algorithm, key) {
+        (
+            SignatureAlgorithm::ES256,
+            KeyInner::EllipticCurve {
+                curve: EcCurveName::P256,
+                ..
+            },
+        ) => {}
+
+        (
+            SignatureAlgorithm::ES384,
+            KeyInner::EllipticCurve {
+                curve: EcCurveName::P384,
+                ..
+            },
+        ) => {}
+
+        // TODO: more
+        (a, _) => {
+            return Err(anyhow::anyhow!(
+                "invalid (or unsupported?) key for algorithm {a}"
+            ))
+        }
+    }
+    Ok(())
 }
 
 #[cfg(test)]
