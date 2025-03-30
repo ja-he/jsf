@@ -1,260 +1,35 @@
 use anyhow::Context;
-use p256::ecdsa;
-use p256::ecdsa::signature::Signer;
-use p256::ecdsa::signature::Verifier;
-use serde::{Deserialize, Serialize};
+
+mod data;
+mod es256;
 
 use base64::prelude::*;
-
-type Base64Url = String;
-
-/// Base64URL-encoded [RFC4648] binary data.
-type DataTypeBinaryData = Base64Url;
-
-/// Base64URL-encoded positive integer with arbitrary precision. Note that the value must not contain leading zero-valued bytes.
-type DataTypeCrypto = Base64Url;
-
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(untagged)]
-pub enum Signature {
-    Core {
-        algorithm: SignatureAlgorithm,
-        #[serde(rename = "publicKey")]
-        public_key: PublicKey,
-        value: Base64Url,
-    },
-}
-
-type PublicKey = Key;
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Key {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub kid: Option<String>,
-    #[serde(flatten)]
-    pub inner_key: KeyInner,
-}
-
-/// Key type indicator. Currently the following types are recognized:
-///
-///  - EC     See: [Additional EC Properties](https://cyberphone.github.io/doc/security/jsf.html#Additional_EC_Properties)
-///  - OKP    See: [Additional OKP Properties](https://cyberphone.github.io/doc/security/jsf.html#Additional_OKP_Properties)
-///  - RSA    See: [Additional RSA Properties](https://cyberphone.github.io/doc/security/jsf.html#Additional_RSA_Properties)
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(tag = "kty")]
-pub enum KeyInner {
-    /// Elliptic Curve (EC)
-    #[serde(rename = "EC")]
-    EllipticCurve {
-        /// EC curve name.
-        #[serde(rename = "crv")]
-        curve: EcCurveName,
-
-        /// EC curve point X.
-        /// The length of this field must be the full size of a coordinate for the curve specified in the "crv" parameter.
-        /// For example, if the value of "crv" is "P-521", the decoded argument must be 66 bytes.
-        x: DataTypeBinaryData,
-
-        /// EC curve point Y.
-        /// The length of this field must be the full size of a coordinate for the curve specified in the "crv" parameter.
-        /// For example, if the value of "crv" is "P-256", the decoded argument must be 32 bytes.
-        y: DataTypeBinaryData,
-
-        #[serde(skip_serializing_if = "Option::is_none")]
-        d: Option<DataTypeBinaryData>,
-    },
-
-    /// Octet Key Pair (OKP)
-    #[serde(rename = "OKP")]
-    OctetKeyPair {
-        /// EdDSA curve name.
-        #[serde(rename = "crv")]
-        curve: EdDsaCurveName,
-
-        /// EdDSA curve point X.
-        /// The length of this field must be the full size of a coordinate for the curve specified in the "crv" parameter.
-        /// For example, if the value of "crv" is "Ed25519", the decoded argument must be 32 bytes.
-        x: DataTypeBinaryData,
-    },
-
-    /// RSA
-    Rsa {
-        /// RSA modulus. (aka `n`)
-        #[serde(rename = "n")]
-        modulus: DataTypeCrypto,
-
-        /// RSA exponent. (aka `e`)
-        #[serde(rename = "e")]
-        exponent: DataTypeCrypto,
-    },
-}
-
-impl TryFrom<p256::PublicKey> for PublicKey {
-    type Error = anyhow::Error;
-    fn try_from(value: p256::PublicKey) -> anyhow::Result<Self> {
-        let jwk_str = value.to_jwk_string();
-        let jwk: PublicKey = serde_json::from_str(&jwk_str)
-            .with_context(|| "failed to parse JWK created from value")?;
-        Ok(jwk)
-    }
-}
-
-/// EC curve name. The currently recognized EC curves include:
-///
-///  - P-256
-///  - P-384
-///  - P-521
-///
-/// Note: If proprietary curve names are added, they must be expressed as URIs.
-#[derive(Serialize, Deserialize, Debug)]
-pub enum EcCurveName {
-    #[serde(rename = "P-256")]
-    P256,
-    #[serde(rename = "P-384")]
-    P384,
-    #[serde(rename = "P-521")]
-    P521,
-}
-
-/// EdDSA curve name. The currently recognized EdDSA curves include:
-///
-///  - Ed25519
-///  - Ed448
-///
-/// Note: If proprietary curve names are added, they must be expressed as URIs.
-#[derive(Serialize, Deserialize, Debug)]
-pub enum EdDsaCurveName {
-    Ed25519,
-    Ed448,
-}
-
-/// Signature algorithm. The currently recognized JWA [RFC7518] and RFC8037 [RFC8037] asymmetric key algorithms include:
-///
-///  - RS256
-///  - RS384
-///  - RS512
-///  - PS256
-///  - PS384
-///  - PS512
-///  - ES256
-///  - ES384
-///  - ES512
-///  - Ed25519
-///  - Ed448
-///
-/// Note: Unlike RFC8037 [RFC8037] JSF requires explicit Ed* algorithm names instead of "EdDSA".
-/// The currently recognized JWA [RFC7518] symmetric key algorithms include:
-///
-///  - HS256
-///  - HS384
-///  - HS512
-///
-/// Note: If proprietary signature algorithms are added, they must be expressed as URIs.
-/// JWS counterpart: "alg".
-#[derive(Serialize, Deserialize, Debug)]
-pub enum SignatureAlgorithm {
-    RS256,
-    RS384,
-    RS512,
-    PS256,
-    PS384,
-    PS512,
-    ES256,
-    ES384,
-    ES512,
-    Ed25519,
-    Ed448,
-    HS256,
-    HS384,
-    HS512,
-}
-
-impl std::fmt::Display for SignatureAlgorithm {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            SignatureAlgorithm::RS256 => write!(f, "RS256"),
-            SignatureAlgorithm::RS384 => write!(f, "RS384"),
-            SignatureAlgorithm::RS512 => write!(f, "RS512"),
-            SignatureAlgorithm::PS256 => write!(f, "PS256"),
-            SignatureAlgorithm::PS384 => write!(f, "PS384"),
-            SignatureAlgorithm::PS512 => write!(f, "PS512"),
-            SignatureAlgorithm::ES256 => write!(f, "ES256"),
-            SignatureAlgorithm::ES384 => write!(f, "ES384"),
-            SignatureAlgorithm::ES512 => write!(f, "ES512"),
-            SignatureAlgorithm::Ed25519 => write!(f, "Ed25519"),
-            SignatureAlgorithm::Ed448 => write!(f, "Ed448"),
-            SignatureAlgorithm::HS256 => write!(f, "HS256"),
-            SignatureAlgorithm::HS384 => write!(f, "HS384"),
-            SignatureAlgorithm::HS512 => write!(f, "HS512"),
-        }
-    }
-}
-
-impl std::fmt::Display for EcCurveName {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            EcCurveName::P256 => write!(f, "P-256"),
-            EcCurveName::P384 => write!(f, "P-384"),
-            EcCurveName::P521 => write!(f, "P-521"),
-        }
-    }
-}
-
-impl std::fmt::Display for EdDsaCurveName {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            EdDsaCurveName::Ed25519 => write!(f, "Ed25519"),
-            EdDsaCurveName::Ed448 => write!(f, "Ed448"),
-        }
-    }
-}
 
 pub fn sign_serde_json_object(
     input: serde_json::Value,
     signature_object_key: &str,
-    algorithm: SignatureAlgorithm,
-    private_key: Key,
+    algorithm: data::SignatureAlgorithm,
+    private_key: data::Key,
 ) -> anyhow::Result<serde_json::Value> {
     let serde_json::Value::Object(mut v) = input else {
         return Err(anyhow::anyhow!("expected object but got {input:?}"));
     };
 
-    let kid = private_key.kid.clone();
-    let simplified_ec_key_jwk_str = {
-        tracing::debug!("starting key adjustment with {:?}", private_key);
-        let serde_json::Value::Object(mut m) = serde_json::to_value(private_key)
-            .with_context(|| "could not serialize private key (internal processing)")?
-        else {
-            return Err(anyhow::anyhow!(
-                "did not find a key object (but some other JSON type)",
-            ));
-        };
-        tracing::debug!("got map {:?}", m);
-        if kid.is_some() {
-            m.remove("kid");
+    // 1. get the public key from the private (key type)
+    let public_key = match &private_key.inner_key {
+        data::KeyInner::EllipticCurve { .. } => {
+            es256::get_public_key(&private_key.clone().try_into().with_context(|| "")?)
+                .with_context(|| "unable to get public key from given private key")?
         }
-        tracing::debug!("have map w/o kid {:?}", m);
-        serde_json::to_string(&serde_json::Value::Object(m))
-            .with_context(|| "could not serialize simplified private key")?
+
+        data::KeyInner::OctetKeyPair { .. } => todo!("unimplemented"),
+
+        data::KeyInner::Rsa { .. } => todo!("unimplemented"),
     };
-    let private_key =
-        p256::SecretKey::from_jwk_str(&simplified_ec_key_jwk_str).with_context(|| {
-            format!("failed to parse private key (from '{simplified_ec_key_jwk_str}')")
-        })?;
+
+    // 2. construct the (unsigned) signature object (public key, algorithm)
     let partial_signature_object = {
-        let p256_public_key = private_key.public_key();
-        let public_key = {
-            let mut pk = PublicKey::try_from(p256_public_key)
-                .with_context(|| "failed to convert public key")?;
-            if let Some(kid) = kid {
-                pk.kid = Some(kid.to_string());
-            }
-            pk
-        };
-
-        validate_key(&algorithm, &public_key.inner_key).with_context(|| "Key not valid.")?;
-
-        let s = Signature::Core {
+        let s = data::Signature::Core {
             algorithm,
             public_key,
             value: "".to_string(), // this is about to be removed before later being added again
@@ -266,6 +41,8 @@ pub fn sign_serde_json_object(
         s_object.remove("value");
         serde_json::Value::Object(s_object)
     };
+
+    // 3. insert signature object into input json object (--)
     let insert_result = v.insert(
         signature_object_key.to_string(),
         partial_signature_object.clone(),
@@ -276,21 +53,17 @@ pub fn sign_serde_json_object(
         ));
     }
 
-    let s = serde_json::to_string(&v).with_context(|| "failed to serialize example")?;
+    // 4. create a canonical serialization (JCS)
+    let signed_object_canonically_serialized = serde_json::to_vec(&v).with_context(|| {
+        "failed to serialize input with added partial signature (should not happen?)"
+    })?;
 
-    let signing_key: p256::ecdsa::SigningKey = private_key.into();
-    let signature: p256::ecdsa::Signature = signing_key.sign(s.as_bytes());
-    let signature_bytes = signature.to_bytes();
+    // 5. sign bytes with key (input, algorithm, private key)
+    let signature_bytes = sign(signed_object_canonically_serialized, private_key)
+        .with_context(|| "unable to sign")?;
 
-    let verifying_key = ecdsa::VerifyingKey::from(signing_key);
-    if let Err(e) = verifying_key.verify(s.as_bytes(), &signature) {
-        return Err(anyhow::anyhow!(
-            "could not verify signature right after creation {e:?}"
-        ));
-    }
-
+    // 6. insert signature value into signed object
     let sig_value_b64url = BASE64_URL_SAFE_NO_PAD.encode(signature_bytes);
-
     let serde_json::Value::Object(mut signature) = partial_signature_object else {
         return Err(anyhow::anyhow!("expected object"));
     };
@@ -312,22 +85,22 @@ pub fn sign_serde_json_object(
             "failed to insert signature object (partial signature was missing?)"
         ));
     }
-
     let signed_object = serde_json::Value::Object(v);
 
+    // 7. that's it
     Ok(signed_object)
 }
 
 pub fn sign_json_object_str(
     input: &str,
     signature_object_key: &str,
-    algorithm: SignatureAlgorithm,
+    algorithm: data::SignatureAlgorithm,
     private_key_jwk_str: &str,
 ) -> anyhow::Result<String> {
     let input_value: serde_json::Value =
         serde_json::from_str(input).with_context(|| "failed to parse input")?;
 
-    let private_key_jwk: Key = serde_json::from_str(private_key_jwk_str)
+    let private_key_jwk: data::Key = serde_json::from_str(private_key_jwk_str)
         .with_context(|| format!("could not parse private key '{private_key_jwk_str}'"))?;
 
     let signed_object = sign_serde_json_object(
@@ -353,11 +126,11 @@ pub fn verify_json_object_str(input: &str, signature_object_key: &str) -> anyhow
         return Err(anyhow::anyhow!("Expected object"));
     };
 
-    let jsf_signature: Signature = {
+    let jsf_signature: data::Signature = {
         if let Some(signature_value) = v.get_mut(signature_object_key) {
             match signature_value {
                 serde_json::Value::Object(signature_obj) => {
-                    let signature: Signature =
+                    let signature: data::Signature =
                         serde_json::from_value(serde_json::Value::Object(signature_obj.clone()))
                             .with_context(|| "Failed to parse signature")?;
                     if signature_obj.remove("value").is_none() {
@@ -376,88 +149,42 @@ pub fn verify_json_object_str(input: &str, signature_object_key: &str) -> anyhow
         }
     };
 
-    let s = serde_json::to_string(&v).with_context(|| "Failed to serialize example")?;
-    tracing::trace!(s, "serialized JSON object");
+    let signed_bytes = serde_json::to_vec(&v).with_context(|| "Failed to serialize example")?;
 
     match jsf_signature {
-        Signature::Core {
+        data::Signature::Core {
             algorithm,
             public_key,
             value,
-        } => {
-            let jwk_str = serde_json::to_string(&public_key)
-                .with_context(|| "Failed to serialize public key")?;
-            tracing::debug!("Algorithm: {algorithm}");
-
-            let pk: p256::PublicKey = {
-                let key: Key = serde_json::from_str(&jwk_str)
-                    .with_context(|| format!("could not parse private key '{jwk_str}'"))?;
-
-                let kid = key.kid.clone();
-                let simplified_str = {
-                    let serde_json::Value::Object(mut m) = serde_json::to_value(key)
-                        .with_context(|| "could not serialize key (internal processing)")?
-                    else {
-                        return Err(anyhow::anyhow!(
-                            "did not find a key object (but some other JSON type)",
-                        ));
-                    };
-                    tracing::debug!("got map {:?}", m);
-                    if kid.is_some() {
-                        m.remove("kid");
-                    }
-                    tracing::debug!("have map w/o kid {:?}", m);
-                    serde_json::to_string(&serde_json::Value::Object(m))
-                        .with_context(|| "could not serialize simplified key")?
-                };
-
-                p256::PublicKey::from_jwk_str(&simplified_str)
-                    .with_context(|| "Failed to parse public key")?
-            };
-
-            let verify_key = p256::ecdsa::VerifyingKey::from(&pk);
-
-            let sig_value_b64url = &value;
-            let sig_vec = BASE64_URL_SAFE_NO_PAD.decode(sig_value_b64url)?;
-
-            let sig = ecdsa::Signature::from_slice(&sig_vec)
-                .with_context(|| "Failed to parse signature")?;
-            tracing::debug!("parsed signature: {sig}");
-
-            match verify_key.verify(s.as_bytes(), &sig) {
-                Ok(()) => Ok(true),
-                Err(_) => Ok(false),
+        } => match (&algorithm, &public_key.inner_key) {
+            (data::SignatureAlgorithm::ES256, data::KeyInner::EllipticCurve { .. }) => {
+                let signature_bytes = BASE64_URL_SAFE_NO_PAD.decode(value)?;
+                let p256_key: es256::PublicKey = public_key
+                    .try_into()
+                    .with_context(|| "unable to use public key as P256 key")?;
+                es256::verify_signature(signed_bytes, signature_bytes, p256_key)
             }
-        }
+
+            (data::SignatureAlgorithm::ES256, _non_ec_key) => {
+                Err(anyhow::format_err!("invalid (non-EC) key given for ES256"))
+            }
+
+            (other_algorithm, _) => todo!("currently no support for {other_algorithm:?}"),
+        },
     }
 }
 
-fn validate_key(algorithm: &SignatureAlgorithm, key: &KeyInner) -> anyhow::Result<()> {
-    match (algorithm, key) {
-        (
-            SignatureAlgorithm::ES256,
-            KeyInner::EllipticCurve {
-                curve: EcCurveName::P256,
-                ..
-            },
-        ) => {}
-
-        (
-            SignatureAlgorithm::ES384,
-            KeyInner::EllipticCurve {
-                curve: EcCurveName::P384,
-                ..
-            },
-        ) => {}
-
-        // TODO: more
-        (a, _) => {
-            return Err(anyhow::anyhow!(
-                "invalid (or unsupported?) key for algorithm {a}"
-            ))
-        }
+fn sign(bytes: Vec<u8>, private_key: data::Key) -> anyhow::Result<Vec<u8>> {
+    match private_key.inner_key {
+        data::KeyInner::EllipticCurve { .. } => es256::sign(
+            bytes,
+            &private_key
+                .try_into()
+                .with_context(|| "unable to convert private key into EC key")?,
+        ),
+        data::KeyInner::OctetKeyPair { .. } => todo!(),
+        data::KeyInner::Rsa { .. } => todo!(),
     }
-    Ok(())
 }
 
 #[cfg(test)]
@@ -468,7 +195,7 @@ mod tests {
     fn test_sign_and_verify_str() {
         let input = r#"{"key": "value"}"#;
         let signature_object_key = "signature";
-        let algorithm = SignatureAlgorithm::ES256;
+        let algorithm = data::SignatureAlgorithm::ES256;
         let private_key_jwk_str = r#"
         {
             "kty": "EC",
@@ -491,8 +218,8 @@ mod tests {
     fn test_sign_and_verify_obj() {
         let input = serde_json::json!({"key": "value"});
         let signature_object_key = "signature";
-        let algorithm = SignatureAlgorithm::ES256;
-        let private_key: Key = serde_json::from_str(
+        let algorithm = data::SignatureAlgorithm::ES256;
+        let private_key: data::Key = serde_json::from_str(
             r#"{
                   "kty": "EC",
                   "crv": "P-256",
