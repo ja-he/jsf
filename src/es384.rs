@@ -70,6 +70,10 @@ impl TryFrom<data::Key> for PublicKey {
     }
 }
 
-pub fn verify_signature(signed_bytes: Vec<u8>, signature_bytes: Vec<u8>, public_key: PublicKey) -> Result<bool> {
+pub fn verify_signature(
+    signed_bytes: Vec<u8>,
+    signature_bytes: Vec<u8>,
+    public_key: PublicKey,
+) -> Result<bool> {
     todo!()
 }

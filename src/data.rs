@@ -26,7 +26,6 @@ pub enum Signature {
         public_key: Option<PublicKey>,
 
         // TODO: certificate stuff
-
         value: Base64Url,
     },
 }

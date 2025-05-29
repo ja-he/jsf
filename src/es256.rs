@@ -189,7 +189,11 @@ impl TryFrom<data::Key> for PublicKey {
     }
 }
 
-pub fn verify_signature(signed_bytes: Vec<u8>, signature_bytes: Vec<u8>, public_key: PublicKey) -> Result<bool> {
+pub fn verify_signature(
+    signed_bytes: Vec<u8>,
+    signature_bytes: Vec<u8>,
+    public_key: PublicKey,
+) -> Result<bool> {
     let jwk_str =
         serde_json::to_string(&public_key).with_context(|| "Failed to serialize public key")?;
 
