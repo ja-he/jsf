@@ -14,8 +14,19 @@ pub type DataTypeCrypto = Base64Url;
 pub enum Signature {
     Core {
         algorithm: SignatureAlgorithm,
+
+        #[serde(skip_serializing_if = "Option::is_none")]
+        #[serde(default)]
+        #[serde(rename = "keyId")]
+        key_id: Option<String>,
+
+        #[serde(skip_serializing_if = "Option::is_none")]
+        #[serde(default)]
         #[serde(rename = "publicKey")]
-        public_key: PublicKey,
+        public_key: Option<PublicKey>,
+
+        // TODO: certificate stuff
+
         value: Base64Url,
     },
 }

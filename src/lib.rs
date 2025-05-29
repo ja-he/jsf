@@ -2,6 +2,7 @@ use anyhow::Context;
 
 mod data;
 mod es256;
+mod es384;
 
 use base64::prelude::*;
 
@@ -31,7 +32,8 @@ pub fn sign_serde_json_object(
     let partial_signature_object = {
         let s = data::Signature::Core {
             algorithm,
-            public_key,
+            key_id: public_key.kid.clone(),
+            public_key: Some(public_key),
             value: "".to_string(), // this is about to be removed before later being added again
         };
         let s_value = serde_json::to_value(&s).with_context(|| "failed to serialize signature")?;
@@ -154,7 +156,8 @@ pub fn verify_json_object_str(input: &str, signature_object_key: &str) -> anyhow
     match jsf_signature {
         data::Signature::Core {
             algorithm,
-            public_key,
+            key_id: _,
+            public_key: Some(public_key),
             value,
         } => match (&algorithm, &public_key.inner_key) {
             (data::SignatureAlgorithm::ES256, data::KeyInner::EllipticCurve { .. }) => {
@@ -169,8 +172,25 @@ pub fn verify_json_object_str(input: &str, signature_object_key: &str) -> anyhow
                 Err(anyhow::format_err!("invalid (non-EC) key given for ES256"))
             }
 
+            (data::SignatureAlgorithm::ES384, data::KeyInner::EllipticCurve { .. }) => {
+                let signature_bytes = BASE64_URL_SAFE_NO_PAD.decode(value)?;
+                let p384_key: es384::PublicKey = public_key
+                    .try_into()
+                    .with_context(|| "unable to use public key as P384 key")?;
+                es384::verify_signature(signed_bytes, signature_bytes, p384_key)
+            }
+
             (other_algorithm, _) => todo!("currently no support for {other_algorithm:?}"),
         },
+        data::Signature::Core {
+            algorithm: _,
+            key_id: _,
+            public_key: None,
+            value: _,
+        } => {
+            // TODO: this is kind of an API question that I do not want to tackle right now.
+            todo!("Have to figure out how to deal with only having Key ID and no actual key info.")
+        }
     }
 }
 
@@ -257,5 +277,61 @@ mod tests {
             !good,
             "bad signature not correctly identified as bad in verification"
         );
+    }
+
+    #[cfg(test)]
+    mod spec_test_vectors {
+        use lazy_static::lazy_static;
+        use std::collections::HashMap;
+
+        use crate::verify_json_object_str;
+
+        lazy_static! {
+            static ref TEST_VECTORS: HashMap<&'static str, &'static str> = {
+                let mut map = HashMap::new();
+                map.insert(
+                    "p256privatekey.jwk",
+                    include_str!("../test_vectors/spec/p256privatekey.jwk"),
+                );
+                map.insert(
+                    "p256#es256@kid.json",
+                    include_str!("../test_vectors/spec/p256_es256_kid.json"),
+                );
+                map.insert(
+                    "p256#es256@name-jwk.json",
+                    include_str!("../test_vectors/spec/p256_es256_name-jwk.json"),
+                );
+                map.insert(
+                    "p384privatekey.jwk",
+                    include_str!("../test_vectors/spec/p384privatekey.jwk"),
+                );
+                map.insert(
+                    "p384#es384@jwk.json",
+                    include_str!("../test_vectors/spec/p384_es384_jwk.json"),
+                );
+                map
+            };
+        }
+
+        // #[test]
+        // fn test_p256_es256_kid_json_validate_signature() {
+        //     let object = TEST_VECTORS["p256#es256@kid.json"];
+        //     assert!(verify_json_object_str(object, "signature")
+        //         .expect("unable to verify valid signature from spec test vector"));
+        // }
+
+        #[test]
+        fn test_p256_es256_name_jwk_json_validate_signature() {
+            let object = TEST_VECTORS["p256#es256@name-jwk.json"];
+            assert!(verify_json_object_str(object, "authorizationSignature")
+                .expect("unable to verify valid signature from spec test vector"));
+        }
+
+        // #[test]
+        // fn test_p384_es384_jwk_json_validate_signature() {
+        //     let object = TEST_VECTORS["p384#es384@jwk.json"];
+        //     assert!(verify_json_object_str(object, "signature")
+        //         .expect("unable to verify valid signature from spec test vector"));
+        // }
     }
 }
