@@ -393,6 +393,10 @@ mod tests {
                     include_str!("../test_vectors/spec/p256_es256_exts-jwk.json"),
                 );
                 map.insert(
+                    "p256#es256@excl-jwk.json",
+                    include_str!("../test_vectors/spec/p256_es256_excl-jwk.json"),
+                );
+                map.insert(
                     "p384privatekey.jwk",
                     include_str!("../test_vectors/spec/p384privatekey.jwk"),
                 );
@@ -424,6 +428,13 @@ mod tests {
             assert!(verify_json_object_str(object, "signature")
                 .expect("unable to verify valid signature from spec test vector"));
         }
+
+        // #[test]
+        // fn test_p256_es256_excl_jwk_json_validate_signature() {
+        //     let object = TEST_VECTORS["p256#es256@excl-jwk.json"];
+        //     assert!(verify_json_object_str(object, "signature")
+        //         .expect("unable to verify valid signature from spec test vector"));
+        // }
 
         // #[test]
         // fn test_p384_es384_jwk_json_validate_signature() {
