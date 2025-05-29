@@ -15,14 +15,10 @@ pub enum Signature {
     Core {
         algorithm: SignatureAlgorithm,
 
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(default)]
-        #[serde(rename = "keyId")]
+        #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyId")]
         key_id: Option<String>,
 
-        #[serde(skip_serializing_if = "Option::is_none")]
-        #[serde(default)]
-        #[serde(rename = "publicKey")]
+        #[serde(default, skip_serializing_if = "Option::is_none", rename = "publicKey")]
         public_key: Option<PublicKey>,
 
         // TODO: certificate stuff
@@ -211,5 +207,22 @@ impl std::fmt::Display for EdDsaCurveName {
             EdDsaCurveName::Ed25519 => write!(f, "Ed25519"),
             EdDsaCurveName::Ed448 => write!(f, "Ed448"),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_core_serializes_clean_without_public_key() {
+        let coresig = Signature::Core {
+            algorithm: SignatureAlgorithm::ES256,
+            key_id: Some("foo.jwk".to_string()),
+            public_key: None,
+            value: "0000".to_string(),
+        };
+        let serialized = serde_json::to_string(&coresig).expect("unable to serialize in the first place");
+        assert_eq!(serialized, r#"{"algorithm":"ES256","keyId":"foo.jwk","value":"0000"}"#);
     }
 }

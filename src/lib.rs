@@ -6,11 +6,23 @@ mod es384;
 
 use base64::prelude::*;
 
+#[derive(Debug)]
+pub struct SignatureCreationOptions {
+    pub include_key_id: bool,
+    pub include_public_key: KeyInclusionOptions,
+}
+#[derive(Debug)]
+pub enum KeyInclusionOptions {
+    Omit,
+    Include { include_kid: bool },
+}
+
 pub fn sign_serde_json_object(
     input: serde_json::Value,
     signature_object_key: &str,
     algorithm: data::SignatureAlgorithm,
     private_key: data::Key,
+    signature_options: SignatureCreationOptions,
 ) -> anyhow::Result<serde_json::Value> {
     let serde_json::Value::Object(mut v) = input else {
         return Err(anyhow::anyhow!("expected object but got {input:?}"));
@@ -27,13 +39,40 @@ pub fn sign_serde_json_object(
 
         data::KeyInner::Rsa { .. } => todo!("unimplemented"),
     };
+    let maybe_public_key = {
+        match signature_options.include_public_key {
+            KeyInclusionOptions::Omit => None,
+            KeyInclusionOptions::Include { include_kid } => {
+                if include_kid {
+                    if public_key.kid.is_none() {
+                        return Err(anyhow::format_err!("unable to include kid in public key object as the private key specifies no kid"));
+                    }
+                    Some(public_key.clone())
+                } else {
+                    let mut pk_for_sig = public_key.clone();
+                    pk_for_sig.kid = None;
+                    Some(pk_for_sig)
+                }
+            }
+        }
+    };
+
+    let maybe_key_id = match (signature_options.include_key_id, &public_key.kid) {
+        (true, Some(key_id)) => Some(key_id.clone()),
+        (false, _) => None,
+        (true, None) => {
+            return Err(anyhow::format_err!(
+                "unable to include key ID (as instructed) since no key ID is available"
+            ))
+        }
+    };
 
     // 2. construct the (unsigned) signature object (public key, algorithm)
     let partial_signature_object = {
         let s = data::Signature::Core {
             algorithm,
-            key_id: public_key.kid.clone(),
-            public_key: Some(public_key),
+            key_id: maybe_key_id,
+            public_key: maybe_public_key,
             value: "".to_string(), // this is about to be removed before later being added again
         };
         let s_value = serde_json::to_value(&s).with_context(|| "failed to serialize signature")?;
@@ -98,6 +137,7 @@ pub fn sign_json_object_str(
     signature_object_key: &str,
     algorithm: data::SignatureAlgorithm,
     private_key_jwk_str: &str,
+    signature_options: SignatureCreationOptions,
 ) -> anyhow::Result<String> {
     let input_value: serde_json::Value =
         serde_json::from_str(input).with_context(|| "failed to parse input")?;
@@ -110,6 +150,7 @@ pub fn sign_json_object_str(
         signature_object_key,
         algorithm,
         private_key_jwk,
+        signature_options,
     )
     .with_context(|| "unable to sign serde_json value")?;
 
@@ -211,6 +252,12 @@ fn sign(bytes: Vec<u8>, private_key: data::Key) -> anyhow::Result<Vec<u8>> {
 mod tests {
     use super::*;
 
+    // TODO: maybe drop this?
+    const DEFAULT_SIGNATURE_CREATION_OPTIONS: SignatureCreationOptions = SignatureCreationOptions {
+        include_key_id: false,
+        include_public_key: KeyInclusionOptions::Include { include_kid: false },
+    };
+
     #[test]
     fn test_sign_and_verify_str() {
         let input = r#"{"key": "value"}"#;
@@ -225,9 +272,14 @@ mod tests {
             "d": "870MB6gfuTJ4HtUnUvYMyJpr5eUZNP4Bk43bVdj3eAE"
         }"#;
 
-        let signed_object =
-            sign_json_object_str(input, signature_object_key, algorithm, private_key_jwk_str)
-                .unwrap();
+        let signed_object = sign_json_object_str(
+            input,
+            signature_object_key,
+            algorithm,
+            private_key_jwk_str,
+            DEFAULT_SIGNATURE_CREATION_OPTIONS,
+        )
+        .unwrap();
         println!("have signed object: {signed_object}");
 
         let good = verify_json_object_str(&signed_object, signature_object_key).unwrap();
@@ -250,8 +302,14 @@ mod tests {
         )
         .unwrap();
 
-        let signed_object =
-            sign_serde_json_object(input, signature_object_key, algorithm, private_key).unwrap();
+        let signed_object = sign_serde_json_object(
+            input,
+            signature_object_key,
+            algorithm,
+            private_key,
+            DEFAULT_SIGNATURE_CREATION_OPTIONS,
+        )
+        .unwrap();
         println!("have signed object: {signed_object}");
 
         // let good = verify_json_object_str(&signed_object, signature_object_key).unwrap();
@@ -265,6 +323,35 @@ mod tests {
 
         let good = verify_json_object_str(input, signature_object_key).unwrap();
         assert!(good, "Good signature not correctly verified");
+    }
+
+    #[test]
+    fn test_recreate_good_signature() {
+        // this key from the JWK spec (rfc7517)
+        let private_key_json_bytes = r#"{"kty":"EC",
+                                         "crv":"P-256",
+                                         "x":"MKBCTNIcKUSDii11ySs3526iDZ8AiTo7Tu6KPAqv7D4",
+                                         "y":"4Etl6SRW2YiLUrN5vfvVHuhp7x8PxltmWWlbbM4IFyM",
+                                         "d":"870MB6gfuTJ4HtUnUvYMyJpr5eUZNP4Bk43bVdj3eAE",
+                                         "use":"enc",
+                                         "kid":"1"}"#;
+        let obj = r#"{"key":"value"}"#;
+        let signature_object_key = "signature";
+
+        let signature = sign_json_object_str(
+            obj,
+            signature_object_key,
+            data::SignatureAlgorithm::ES256,
+            private_key_json_bytes,
+            SignatureCreationOptions {
+                include_key_id: false,
+                include_public_key: KeyInclusionOptions::Include { include_kid: false },
+            },
+        )
+        .expect("could not sign");
+
+        let expected_result = r#"{"key":"value","signature":{"algorithm":"ES256","publicKey":{"crv":"P-256","kty":"EC","x":"MKBCTNIcKUSDii11ySs3526iDZ8AiTo7Tu6KPAqv7D4","y":"4Etl6SRW2YiLUrN5vfvVHuhp7x8PxltmWWlbbM4IFyM"},"value":"rcwOXiwYpd_BBrFE0BSGYjV3HBzeqeuTAIar8zVVw-Ir0fI8q8JzryU72l0_AZFiu5-hpfcVmBHs6pHFJqL6KA"}}"#;
+        assert_eq!(signature, expected_result);
     }
 
     #[test]
