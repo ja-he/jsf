@@ -17,6 +17,13 @@ pub enum KeyInclusionOptions {
     Include { include_kid: bool },
 }
 
+#[tracing::instrument(skip(
+    input,
+    private_key,
+    signature_object_key,
+    algorithm,
+    signature_options
+))]
 pub fn sign_serde_json_object(
     input: serde_json::Value,
     signature_object_key: &str,
@@ -132,6 +139,13 @@ pub fn sign_serde_json_object(
     Ok(signed_object)
 }
 
+#[tracing::instrument(skip(
+    input,
+    signature_object_key,
+    algorithm,
+    private_key_jwk_str,
+    signature_options
+))]
 pub fn sign_json_object_str(
     input: &str,
     signature_object_key: &str,
