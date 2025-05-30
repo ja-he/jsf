@@ -10,8 +10,17 @@ pub type DataTypeBinaryData = Base64Url;
 pub type DataTypeCrypto = Base64Url;
 
 #[derive(Serialize, Deserialize, Debug)]
+pub struct Signature {
+    #[serde(rename = "excludes", default, skip_serializing_if = "Vec::is_empty")]
+    pub excludes: Vec<String>,
+
+    #[serde(flatten)]
+    pub inner: InnerSignature,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 #[serde(untagged)]
-pub enum Signature {
+pub enum InnerSignature {
     Core {
         algorithm: SignatureAlgorithm,
 
@@ -216,13 +225,20 @@ mod tests {
 
     #[test]
     fn test_core_serializes_clean_without_public_key() {
-        let coresig = Signature::Core {
-            algorithm: SignatureAlgorithm::ES256,
-            key_id: Some("foo.jwk".to_string()),
-            public_key: None,
-            value: "0000".to_string(),
+        let coresig = Signature {
+            excludes: vec![],
+            inner: InnerSignature::Core {
+                algorithm: SignatureAlgorithm::ES256,
+                key_id: Some("foo.jwk".to_string()),
+                public_key: None,
+                value: "0000".to_string(),
+            },
         };
-        let serialized = serde_json::to_string(&coresig).expect("unable to serialize in the first place");
-        assert_eq!(serialized, r#"{"algorithm":"ES256","keyId":"foo.jwk","value":"0000"}"#);
+        let serialized =
+            serde_json::to_string(&coresig).expect("unable to serialize in the first place");
+        assert_eq!(
+            serialized,
+            r#"{"algorithm":"ES256","keyId":"foo.jwk","value":"0000"}"#
+        );
     }
 }

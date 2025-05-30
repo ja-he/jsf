@@ -10,6 +10,7 @@ use base64::prelude::*;
 pub struct SignatureCreationOptions {
     pub include_key_id: bool,
     pub include_public_key: KeyInclusionOptions,
+    pub excludes: Vec<String>,
 }
 #[derive(Debug)]
 pub enum KeyInclusionOptions {
@@ -76,11 +77,14 @@ pub fn sign_serde_json_object(
 
     // 2. construct the (unsigned) signature object (public key, algorithm)
     let partial_signature_object = {
-        let s = data::Signature::Core {
-            algorithm,
-            key_id: maybe_key_id,
-            public_key: maybe_public_key,
-            value: "".to_string(), // this is about to be removed before later being added again
+        let s = data::Signature {
+            excludes: signature_options.excludes.clone(),
+            inner: data::InnerSignature::Core {
+                algorithm,
+                key_id: maybe_key_id,
+                public_key: maybe_public_key,
+                value: "".to_string(), // this is about to be removed before later being added again
+            },
         };
         let s_value = serde_json::to_value(&s).with_context(|| "failed to serialize signature")?;
         let serde_json::Value::Object(mut s_object) = s_value else {
@@ -99,6 +103,11 @@ pub fn sign_serde_json_object(
         return Err(anyhow::anyhow!(
             "failed to insert signature object (signature already present?)"
         ));
+    }
+
+    // 3a. apply excludes
+    for exclude_key in &signature_options.excludes {
+        v.remove(exclude_key);
     }
 
     // 4. create a canonical serialization (JCS)
@@ -205,11 +214,18 @@ pub fn verify_json_object_str(input: &str, signature_object_key: &str) -> anyhow
             return Err(anyhow::anyhow!("Expected signature"));
         }
     };
+    for exclude_key in &jsf_signature.excludes {
+        let remove_result = v.remove(exclude_key);
+        match remove_result {
+            Some(val) => tracing::debug!("removed property '{exclude_key}'({val:?})."),
+            None => tracing::debug!("tried to remove property '{exclude_key}' but not found."),
+        }
+    }
 
     let signed_bytes = serde_json::to_vec(&v).with_context(|| "Failed to serialize example")?;
 
-    match jsf_signature {
-        data::Signature::Core {
+    match jsf_signature.inner {
+        data::InnerSignature::Core {
             algorithm,
             key_id: _,
             public_key: Some(public_key),
@@ -237,7 +253,7 @@ pub fn verify_json_object_str(input: &str, signature_object_key: &str) -> anyhow
 
             (other_algorithm, _) => todo!("currently no support for {other_algorithm:?}"),
         },
-        data::Signature::Core {
+        data::InnerSignature::Core {
             algorithm: _,
             key_id: _,
             public_key: None,
@@ -270,6 +286,7 @@ mod tests {
     const DEFAULT_SIGNATURE_CREATION_OPTIONS: SignatureCreationOptions = SignatureCreationOptions {
         include_key_id: false,
         include_public_key: KeyInclusionOptions::Include { include_kid: false },
+        excludes: vec![],
     };
 
     #[test]
@@ -331,6 +348,50 @@ mod tests {
     }
 
     #[test]
+    fn test_sign_and_verify_with_excludes() {
+        let input = serde_json::json!({"key": "value", "key2": 42});
+        let signature_object_key = "signature";
+        let algorithm = data::SignatureAlgorithm::ES256;
+        let private_key: data::Key = serde_json::from_str(
+            r#"{
+                  "kty": "EC",
+                  "crv": "P-256",
+                  "x": "MKBCTNIcKUSDii11ySs3526iDZ8AiTo7Tu6KPAqv7D4",
+                  "y": "4Etl6SRW2YiLUrN5vfvVHuhp7x8PxltmWWlbbM4IFyM",
+                  "d": "870MB6gfuTJ4HtUnUvYMyJpr5eUZNP4Bk43bVdj3eAE"
+                }"#,
+        )
+        .unwrap();
+
+        let signed_object = sign_serde_json_object(
+            input,
+            signature_object_key,
+            algorithm,
+            private_key,
+            SignatureCreationOptions {
+                include_key_id: false,
+                include_public_key: KeyInclusionOptions::Include { include_kid: false },
+                excludes: vec!["key2".to_string()],
+            },
+        )
+        .unwrap();
+        println!("have signed object: {signed_object}");
+
+        let good =
+            verify_json_object_str(&signed_object.to_string(), signature_object_key).unwrap();
+        assert!(good, "Signature verification failed");
+
+        let mut signed_object_with_altered_excluded_property = signed_object.clone();
+        signed_object_with_altered_excluded_property["key2"] = serde_json::json!(43);
+        let good = verify_json_object_str(
+            &signed_object_with_altered_excluded_property.to_string(),
+            signature_object_key,
+        )
+        .unwrap();
+        assert!(good, "Signature verification of altered object failed");
+    }
+
+    #[test]
     fn test_verify_good_signature() {
         let input = r#"{"key":"value","signature":{"algorithm":"ES256","publicKey":{"crv":"P-256","kty":"EC","x":"MKBCTNIcKUSDii11ySs3526iDZ8AiTo7Tu6KPAqv7D4","y":"4Etl6SRW2YiLUrN5vfvVHuhp7x8PxltmWWlbbM4IFyM"},"value":"rcwOXiwYpd_BBrFE0BSGYjV3HBzeqeuTAIar8zVVw-Ir0fI8q8JzryU72l0_AZFiu5-hpfcVmBHs6pHFJqL6KA"}}"#;
         let signature_object_key = "signature";
@@ -360,6 +421,7 @@ mod tests {
             SignatureCreationOptions {
                 include_key_id: false,
                 include_public_key: KeyInclusionOptions::Include { include_kid: false },
+                excludes: vec![],
             },
         )
         .expect("could not sign");
