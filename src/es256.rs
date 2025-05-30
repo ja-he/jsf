@@ -122,18 +122,18 @@ impl TryFrom<data::Key> for PrivateKey {
     }
 }
 
-#[derive(Serialize, Clone, PartialEq)]
+#[derive(Serialize, Clone, PartialEq, Debug)]
 pub enum KtyEC {
     #[serde(rename = "EC")]
     EllipticCurve,
 }
-#[derive(Serialize, Clone, PartialEq)]
+#[derive(Serialize, Clone, PartialEq, Debug)]
 pub enum CurveP256 {
     #[serde(rename = "P-256")]
     P256,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub struct PublicKey {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub kid: Option<String>,
@@ -189,6 +189,7 @@ impl TryFrom<data::Key> for PublicKey {
     }
 }
 
+#[tracing::instrument]
 pub fn verify_signature(
     signed_bytes: Vec<u8>,
     signature_bytes: Vec<u8>,
