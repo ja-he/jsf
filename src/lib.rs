@@ -1,6 +1,6 @@
 use anyhow::Context;
 
-mod data;
+pub mod data;
 mod es256;
 mod es384;
 
