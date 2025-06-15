@@ -1,0 +1,675 @@
+p256privatekey.jwk
+The Sample Object was signed by the following EC private key in the JWK [RFC7517] format:
+{
+  "kid": "example.com:p256",
+  "kty": "EC",
+  "crv": "P-256",
+  "x": "6BKxpty8cI-exDzCkh-goU6dXq3MbcY0cd1LaAxiNrU",
+  "y": "mCbcvUzm44j3Lt2b5BPyQloQ91tf2D2V-gzeUxWaUdg",
+  "d": "6XxMFXhcYT5QN9w5TIg2aSKsbcj-pj4BnZkK7ZOt4B8"
+}
+
+p256#es256@kid.json
+The following object was signed by the p256privatekey.jwk key while the public key is identified by a keyId property:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "ES256",
+    "keyId": "example.com:p256",
+    "value": "Il-GTiAwCgAX3X9IC7AWfVzySWA18ZLGgHgj3KDfp0-1XsjkVDdypdIFjE9vWdieI6-pHabo6UzcYGubFSVS_w"
+  }
+}
+
+p256#es256@imp.json
+The following object was signed by the p256privatekey.jwk key while the public key is supposed to be implicitly known by the verifier:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "ES256",
+    "value": "0nJX_Ek5PRjV0mQN19E5Hcfdjf_T-I49E0AzJD6VYFq-3PxHXlF6cn52VfOZN9brFfURXV9INiYrB--9v4Ly1Q"
+  }
+}
+
+p256#es256@cer.json
+The following object was signed by the p256privatekey.jwk key while the public key is featured in a certificatePath:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "ES256",
+    "certificatePath": [
+      "MIIB4zCCAUSgAwIBAgIGAXQvSpluMAoGCCqGSM49BAMEMBYxFDASBgNVBAMTC1Rlc3QgU3ViIENBMB4XDTE4MDEwMTAwMDAwMFoXDTMwMTIzMTIzNTk1OVowNzE1MDMGA1UEAxMsVGVzdCBjZXJ0aWZpY2F0ZSBtYXRjaGluZyBwMjU2cHJpdmF0ZWtleS5wZW0wWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAToErGm3Lxwj57EPMKSH6ChTp1ercxtxjRx3UtoDGI2tZgm3L1M5uOI9y7dm-QT8kJaEPdbX9g9lfoM3lMVmlHYo10wWzAJBgNVHRMEAjAAMA4GA1UdDwEB_wQEAwID-DAdBgNVHQ4EFgQUA7M3k-KvWbX6doCGtEiuymmJmsAwHwYDVR0jBBgwFoAUoxFlz13AUKdL5RnhdntUmrdPl4owCgYIKoZIzj0EAwQDgYwAMIGIAkIBkOc9pom0iG4DK4bxq6YDHIOOzXfzrgXAQlC13d1y_rgdr8u5dzWPwzGO4YlSUZxh7G4OWdn5tdLltud69ZjXW_oCQgF5V3fe1smjY8uj3Xesz3DObu2RE_f_Bqaotf_7H0sA-z7t0nJTo6MeiDVsLmx4Re9q_PxpH2oIN-01l_SDbGADfQ",
+      "MIIDgzCCAWugAwIBAgIBAzANBgkqhkiG9w0BAQ0FADAXMRUwEwYDVQQDEwxUZXN0IFJvb3QgQ0EwHhcNMTYwNzEwMTAwMDAwWhcNMzkwNzEwMDk1OTU5WjAWMRQwEgYDVQQDEwtUZXN0IFN1YiBDQTCBmzAQBgcqhkjOPQIBBgUrgQQAIwOBhgAEAPc4WO7RVjN58NCzHfz5yDrrl_ulWhyYdYgPz-13bR3qiC0TguuXRN7Ye9cXxDPwfZNiPui5jEzvjkkEFeFRYc_2AMgl7WOo9JWQjf0RQXMxqlnwjUa5UoKst9NZOPn-tTcq6k1nkd3LZKRLfLZq5qGWm5mQWLf73WHFe1ELES5oO1Zco2MwYTAPBgNVHRMBAf8EBTADAQH_MA4GA1UdDwEB_wQEAwIBBjAdBgNVHQ4EFgQUoxFlz13AUKdL5RnhdntUmrdPl4owHwYDVR0jBBgwFoAUQI50o7LJMzle8DBu7lOobUF1IcowDQYJKoZIhvcNAQENBQADggIBAB2a9M8LkaTQh5iZW8-vpkFdiu5sFcOUWKxtFZ7FImuFMPkJbUhHBAYjnSXiLb0SyqWwh4QlO2qSpGqxEjpuGtam-maKsvKxMLwybPgv18-bsbmM7ZjBG7MQYox5P7jFYZB4U4I3Pn0kQK6Bdr18Ua8EP8YkTKyJS6Gmohl6iTtdsgOdJ5EHjzC0GhzwiR3pXKDX44LO0aK6lERWX3uOAqZazB-K8qhFnh1MA6_p-q1zVcEIuPcfKmi-8wBOjqHhao8ThmB8afpolWfFrEx23e5ybUe4FPAGMh_5lRP0pA7yHdethk3J5KKScmBioFDm0d8NxlojjMXKHIe0hwJQB6YJjEPlFw1-U0a4l4IbHEFIywuTmRP0-gCeiznnHkg96JvJRDiQt8sj2DOaCi784HlbVQQQzTBd8VJoCJRgG9CChXqcZn5T-wThGviuMzREHpteSCE2AyZ-7_loaKsWV_riTqv7GgGVUnke8p0XNjtzMzD-iJVNvLKNhpt4w84jB11TGqnvuJ3i73e-hg96yZITAhMgUSXpn_cZtCPl3oHu7Cjpu78vyuA0QatYCEBPMAlUfQs-exA8nkV40giCBc3muOpsTjJW1-vQrxpFGkXvK4s9wuzqVrrbXRGNYNCiO6ZrEDJJ3_Ms24bE4JJ_uPnhy7LqtmuUEhe3z3Z1Sx7I"
+    ],
+    "value": "OJihSlnH4b35ur8pp-VmU30rQKUwBeCJn8gBCIKExs_DsNshVxDyAYjdIWhjAKdkJVih6oddxIjJORHAFTHX7Q"
+  }
+}
+
+p256#es256@name-jwk.json
+The following object was signed by the p256privatekey.jwk key but uses another property name than in the other samples for holding the signaturecore object:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "authorizationSignature": {
+    "algorithm": "ES256",
+    "publicKey": {
+      "kty": "EC",
+      "crv": "P-256",
+      "x": "6BKxpty8cI-exDzCkh-goU6dXq3MbcY0cd1LaAxiNrU",
+      "y": "mCbcvUzm44j3Lt2b5BPyQloQ91tf2D2V-gzeUxWaUdg"
+    },
+    "value": "2kbNgBVkRU05yUJ53jdR4gAx-LeLeZCBmD88y_WVlLBGvxyOP5ASS-WRgiX3HjLu7y8P5c7Qy7ngjWATZmO3lw"
+  }
+}
+
+p256#es256@exts-jwk.json
+The following object was signed by the p256privatekey.jwk key. There is also an extensions list:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "ES256",
+    "publicKey": {
+      "kty": "EC",
+      "crv": "P-256",
+      "x": "6BKxpty8cI-exDzCkh-goU6dXq3MbcY0cd1LaAxiNrU",
+      "y": "mCbcvUzm44j3Lt2b5BPyQloQ91tf2D2V-gzeUxWaUdg"
+    },
+    "extensions": ["otherExt", "https://example.com/extension"],
+    "otherExt": "Cool Stuff",
+    "https://example.com/extension": {
+      "life-is-great": true
+    },
+    "value": "jFlU5VEGcq7ezESeKX_JR79rrppnE4uxmnPTLeYth6atfJker7oDon1R3yKLEeGS1vVntVpuGjxNSdLqIrLd0A"
+  }
+}
+
+p256#es256@excl-jwk.json
+The following object was signed by the p256privatekey.jwk key. There is also an excludes list:
+{
+  "mySignedData": "something",
+  "myUnsignedData": "something else",
+  "signature": {
+    "algorithm": "ES256",
+    "publicKey": {
+      "kty": "EC",
+      "crv": "P-256",
+      "x": "6BKxpty8cI-exDzCkh-goU6dXq3MbcY0cd1LaAxiNrU",
+      "y": "mCbcvUzm44j3Lt2b5BPyQloQ91tf2D2V-gzeUxWaUdg"
+    },
+    "excludes": ["myUnsignedData"],
+    "value": "EWkjHQTGBptNmhCsRw2wHqX64XpWS_4n4ba3DJ8HisvWl4eZYHsx6QCe7NIrwYHJOB6Tr-yOqN3G7oH9zH27jQ"
+  }
+}
+
+p384privatekey.jwk
+EC private key associated with subsequent objects:
+{
+  "kid": "example.com:p384",
+  "kty": "EC",
+  "crv": "P-384",
+  "x": "o4lIdIXzdJro4jU9g-2q-__i5WcutpJaWwOeSgKL8x6nxKWOPD5rH-POQhJ79l6t",
+  "y": "MLnyLIGdTO2feJkCW3rWWKG3elhi1Zmbp068Ejb_1LuI-2cNQsRUqb16TfK588_N",
+  "d": "woqAfcmqQ5T0rD-FlnTqjXw8wLOIXACCIy4SoWwy8jiSc_BRVH5jGPwZZUyvP1vd"
+}
+
+p384#es384@jwk.json
+The following object was signed by the p384privatekey.jwk key:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "ES384",
+    "publicKey": {
+      "kty": "EC",
+      "crv": "P-384",
+      "x": "o4lIdIXzdJro4jU9g-2q-__i5WcutpJaWwOeSgKL8x6nxKWOPD5rH-POQhJ79l6t",
+      "y": "MLnyLIGdTO2feJkCW3rWWKG3elhi1Zmbp068Ejb_1LuI-2cNQsRUqb16TfK588_N"
+    },
+    "value": "OxXAQrGMw1F_PaSnsqDs2y2waf6N9UAR79XgL8lFhkVyHW2m1gyjriLRJUtH6lG3fts_zzhrCLUoLo4dQTFzRPrNilSWaMSyH6BIHldfA-DWE--Pe-o5yHKrEQ97mCcq"
+  }
+}
+
+p384#es384@kid.json
+The following object was signed by the p384privatekey.jwk key while the public key is identified by a keyId property:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "ES384",
+    "keyId": "example.com:p384",
+    "value": "GVCa3WHgNlpW39Aj9X4V2pIng9305zsDZwcv6FCpRRSgfVI3oj0a_GKEKGPHcdkg5efX1mcm9PsY5Puhbx7sDF8I0LyPXncpL2JT5LPekC1qCyGZjQKrVUnuHeCf3zdO"
+  }
+}
+
+p384#es384@imp.json
+The following object was signed by the p384privatekey.jwk key while the public key is supposed to be implicitly known by the verifier:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "ES384",
+    "value": "vH3otMMlnOX7TgkgF39xhJuXtYlevK0m6_Xk9ueYqO_p4jZccOGLAifXlfALnGYlrcwb4-yfptpjI0MIpqW5D4GQ9s-Lac5t9X1y5RbY8o27-M9qRx8-G-R4BuGy74nq"
+  }
+}
+
+p384#es384@cer.json
+The following object was signed by the p384privatekey.jwk key while the public key is featured in a certificatePath:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "ES384",
+    "certificatePath": [
+      "MIIB_zCCAWGgAwIBAgIGAXQvStY5MAoGCCqGSM49BAMEMBYxFDASBgNVBAMTC1Rlc3QgU3ViIENBMB4XDTE4MDEwMTAwMDAwMFoXDTMwMTIzMTIzNTk1OVowNzE1MDMGA1UEAxMsVGVzdCBjZXJ0aWZpY2F0ZSBtYXRjaGluZyBwMzg0cHJpdmF0ZWtleS5wZW0wdjAQBgcqhkjOPQIBBgUrgQQAIgNiAASjiUh0hfN0mujiNT2D7ar7_-LlZy62klpbA55KAovzHqfEpY48Pmsf485CEnv2Xq0wufIsgZ1M7Z94mQJbetZYobd6WGLVmZunTrwSNv_Uu4j7Zw1CxFSpvXpN8rnzz82jXTBbMAkGA1UdEwQCMAAwDgYDVR0PAQH_BAQDAgP4MB0GA1UdDgQWBBSkkDbYHSxBQcPCMDXf8e7Oz2sPXjAfBgNVHSMEGDAWgBSjEWXPXcBQp0vlGeF2e1Sat0-XijAKBggqhkjOPQQDBAOBiwAwgYcCQgGiCQtibiWyX2suaBsSUdJifTMqKV8a9AhNnK8-ImQ_8OgHRa3isVOBCBD5lSGWypKgV-JNUni5xD3n63UwxuAgBQJBDcfpx_xnk-gskYqEnCdiTuGwM_p0frL1Q1KLTspN0aLpD4kEwKl1yxQKe_4bM7AwIUIYrECIGCTtFUkfQY3oPTU",
+      "MIIDgzCCAWugAwIBAgIBAzANBgkqhkiG9w0BAQ0FADAXMRUwEwYDVQQDEwxUZXN0IFJvb3QgQ0EwHhcNMTYwNzEwMTAwMDAwWhcNMzkwNzEwMDk1OTU5WjAWMRQwEgYDVQQDEwtUZXN0IFN1YiBDQTCBmzAQBgcqhkjOPQIBBgUrgQQAIwOBhgAEAPc4WO7RVjN58NCzHfz5yDrrl_ulWhyYdYgPz-13bR3qiC0TguuXRN7Ye9cXxDPwfZNiPui5jEzvjkkEFeFRYc_2AMgl7WOo9JWQjf0RQXMxqlnwjUa5UoKst9NZOPn-tTcq6k1nkd3LZKRLfLZq5qGWm5mQWLf73WHFe1ELES5oO1Zco2MwYTAPBgNVHRMBAf8EBTADAQH_MA4GA1UdDwEB_wQEAwIBBjAdBgNVHQ4EFgQUoxFlz13AUKdL5RnhdntUmrdPl4owHwYDVR0jBBgwFoAUQI50o7LJMzle8DBu7lOobUF1IcowDQYJKoZIhvcNAQENBQADggIBAB2a9M8LkaTQh5iZW8-vpkFdiu5sFcOUWKxtFZ7FImuFMPkJbUhHBAYjnSXiLb0SyqWwh4QlO2qSpGqxEjpuGtam-maKsvKxMLwybPgv18-bsbmM7ZjBG7MQYox5P7jFYZB4U4I3Pn0kQK6Bdr18Ua8EP8YkTKyJS6Gmohl6iTtdsgOdJ5EHjzC0GhzwiR3pXKDX44LO0aK6lERWX3uOAqZazB-K8qhFnh1MA6_p-q1zVcEIuPcfKmi-8wBOjqHhao8ThmB8afpolWfFrEx23e5ybUe4FPAGMh_5lRP0pA7yHdethk3J5KKScmBioFDm0d8NxlojjMXKHIe0hwJQB6YJjEPlFw1-U0a4l4IbHEFIywuTmRP0-gCeiznnHkg96JvJRDiQt8sj2DOaCi784HlbVQQQzTBd8VJoCJRgG9CChXqcZn5T-wThGviuMzREHpteSCE2AyZ-7_loaKsWV_riTqv7GgGVUnke8p0XNjtzMzD-iJVNvLKNhpt4w84jB11TGqnvuJ3i73e-hg96yZITAhMgUSXpn_cZtCPl3oHu7Cjpu78vyuA0QatYCEBPMAlUfQs-exA8nkV40giCBc3muOpsTjJW1-vQrxpFGkXvK4s9wuzqVrrbXRGNYNCiO6ZrEDJJ3_Ms24bE4JJ_uPnhy7LqtmuUEhe3z3Z1Sx7I"
+    ],
+    "value": "BUiNYx-lD_M0LfRQJIbparogOgQLhAN-huhD5Ou9Eh8E9AVMu0O5teKxQHiH7z7aMQ_wD3bcpxucWIJNeKtLtp2YSQoPhnMJTJyY6xBBX2cjzzlTjeTcPMQZNa2V0MJK"
+  }
+}
+
+p521privatekey.jwk
+EC private key associated with subsequent objects:
+{
+  "kid": "example.com:p521",
+  "kty": "EC",
+  "crv": "P-521",
+  "x": "AVb-eD8V1UAzN8GWoUypQ_8xSABA4PwUZ1O_fanjLvbwpuyoniN98ljWt3y93TCrDAqe1089tLCfpJhre8M5frBs",
+  "y": "ABORvO-p61zLrGCtgqqqFcQJX_ljnoJ7iDd1IIKZSyksI8aElmtJFCRVSgCyU_P7mSmilqVVaBWhE9fqRHcQ2u_c",
+  "d": "AUxbUwj3PKhK08nxKFFRToiriDJyp_bUv0puyt0qch9UwQ5qCjqBqSPAOB5RyvPKy0XwKDhXJGeAGsVqKzsUMRxA"
+}
+
+p521#es512@jwk.json
+The following object was signed by the p521privatekey.jwk key:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "ES512",
+    "publicKey": {
+      "kty": "EC",
+      "crv": "P-521",
+      "x": "AVb-eD8V1UAzN8GWoUypQ_8xSABA4PwUZ1O_fanjLvbwpuyoniN98ljWt3y93TCrDAqe1089tLCfpJhre8M5frBs",
+      "y": "ABORvO-p61zLrGCtgqqqFcQJX_ljnoJ7iDd1IIKZSyksI8aElmtJFCRVSgCyU_P7mSmilqVVaBWhE9fqRHcQ2u_c"
+    },
+    "value": "AarnKZEM1hfLd4hpeDguOMV0wAX-7r3z7qRG6RR1MNy3ypliYFSrziQoV1bSYiy7B7VbULQPvtcjhtIAqjRPqaMMAOxplmbKUQNsHQcTxSfrX5jmHbxI_XZpaKv0Fagl7lNmlnHcRx9eeO7Vq8aqIlhQ1afYy34-fTjxHBwe0kNEkyqN"
+  }
+}
+
+p521#es512@kid.json
+The following object was signed by the p521privatekey.jwk key while the public key is identified by a keyId property:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "ES512",
+    "keyId": "example.com:p521",
+    "value": "ABePs8Mek8iGGi5CX9FHoLcezTYzY1WRLi_QVgHLPN-bzKUhsGbTDEpebHlB1yv0k9kAe1TAXMJAmB0pSDTkM5wFAaY58KJkfvQAKjQHztYFn4Z4DOPiOXG_18azwKGwynzV6-9XFSd1mcH7R42KZxhIvRGQTKpSLHPxyiSxEH1ccLGh"
+  }
+}
+
+p521#es512@imp.json
+The following object was signed by the p521privatekey.jwk key while the public key is supposed to be implicitly known by the verifier:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "ES512",
+    "value": "AHXuqzN7f0IPEcgyJCEJdNS18ITiyt1q7zOMzGlh7ZIDMfOsqY_tx-HMua9UrlMRIEzPJAQqjZKiAgoFwLcBP6yQAQyX_-Ver--u9lEqX566AViazxua-DVPAFpUXGG8Pe5Ju5vikkNNGFQFcQsA5l3g7NZO_OOzkgscZhgX7psl6vsN"
+  }
+}
+
+p521#es512@cer.json
+The following object was signed by the p521privatekey.jwk key while the public key is featured in a certificatePath:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "ES512",
+    "certificatePath": [
+      "MIICJDCCAYegAwIBAgIGAXQvSvTAMAoGCCqGSM49BAMEMBYxFDASBgNVBAMTC1Rlc3QgU3ViIENBMB4XDTE4MDEwMTAwMDAwMFoXDTMwMTIzMTIzNTk1OVowNzE1MDMGA1UEAxMsVGVzdCBjZXJ0aWZpY2F0ZSBtYXRjaGluZyBwNTIxcHJpdmF0ZWtleS5wZW0wgZswEAYHKoZIzj0CAQYFK4EEACMDgYYABAFW_ng_FdVAMzfBlqFMqUP_MUgAQOD8FGdTv32p4y728KbsqJ4jffJY1rd8vd0wqwwKntdPPbSwn6SYa3vDOX6wbAATkbzvqetcy6xgrYKqqhXECV_5Y56Ce4g3dSCCmUspLCPGhJZrSRQkVUoAslPz-5kpopalVWgVoRPX6kR3ENrv3KNdMFswCQYDVR0TBAIwADAOBgNVHQ8BAf8EBAMCA_gwHQYDVR0OBBYEFNzc8XwQAnDUfm2oEXYDLK8abOxlMB8GA1UdIwQYMBaAFKMRZc9dwFCnS-UZ4XZ7VJq3T5eKMAoGCCqGSM49BAMEA4GKADCBhgJBQ55o50VHwZbCN7JwtDNbilbOF9YTb3DbPQLv5ALcedMh4kMWGSNKPn8le-A0_1kA7_jH1L1nqr9fMHR4zul15vcCQUSM40O8E77fHmgFdfeRMzHRt8QlNkhc999XzGgkAP7qYWbGu3KwORStv55eWv0sd65qZoKfNYPGz_2tClGUyye0",
+      "MIIDgzCCAWugAwIBAgIBAzANBgkqhkiG9w0BAQ0FADAXMRUwEwYDVQQDEwxUZXN0IFJvb3QgQ0EwHhcNMTYwNzEwMTAwMDAwWhcNMzkwNzEwMDk1OTU5WjAWMRQwEgYDVQQDEwtUZXN0IFN1YiBDQTCBmzAQBgcqhkjOPQIBBgUrgQQAIwOBhgAEAPc4WO7RVjN58NCzHfz5yDrrl_ulWhyYdYgPz-13bR3qiC0TguuXRN7Ye9cXxDPwfZNiPui5jEzvjkkEFeFRYc_2AMgl7WOo9JWQjf0RQXMxqlnwjUa5UoKst9NZOPn-tTcq6k1nkd3LZKRLfLZq5qGWm5mQWLf73WHFe1ELES5oO1Zco2MwYTAPBgNVHRMBAf8EBTADAQH_MA4GA1UdDwEB_wQEAwIBBjAdBgNVHQ4EFgQUoxFlz13AUKdL5RnhdntUmrdPl4owHwYDVR0jBBgwFoAUQI50o7LJMzle8DBu7lOobUF1IcowDQYJKoZIhvcNAQENBQADggIBAB2a9M8LkaTQh5iZW8-vpkFdiu5sFcOUWKxtFZ7FImuFMPkJbUhHBAYjnSXiLb0SyqWwh4QlO2qSpGqxEjpuGtam-maKsvKxMLwybPgv18-bsbmM7ZjBG7MQYox5P7jFYZB4U4I3Pn0kQK6Bdr18Ua8EP8YkTKyJS6Gmohl6iTtdsgOdJ5EHjzC0GhzwiR3pXKDX44LO0aK6lERWX3uOAqZazB-K8qhFnh1MA6_p-q1zVcEIuPcfKmi-8wBOjqHhao8ThmB8afpolWfFrEx23e5ybUe4FPAGMh_5lRP0pA7yHdethk3J5KKScmBioFDm0d8NxlojjMXKHIe0hwJQB6YJjEPlFw1-U0a4l4IbHEFIywuTmRP0-gCeiznnHkg96JvJRDiQt8sj2DOaCi784HlbVQQQzTBd8VJoCJRgG9CChXqcZn5T-wThGviuMzREHpteSCE2AyZ-7_loaKsWV_riTqv7GgGVUnke8p0XNjtzMzD-iJVNvLKNhpt4w84jB11TGqnvuJ3i73e-hg96yZITAhMgUSXpn_cZtCPl3oHu7Cjpu78vyuA0QatYCEBPMAlUfQs-exA8nkV40giCBc3muOpsTjJW1-vQrxpFGkXvK4s9wuzqVrrbXRGNYNCiO6ZrEDJJ3_Ms24bE4JJ_uPnhy7LqtmuUEhe3z3Z1Sx7I"
+    ],
+    "value": "AbJbakFg46YGk7NctuDiiAeT_NTcSlhgYMEqDnt9kPBNVmIOg76wFcLJtJKvH1N-3uzJE_VXkapW87UcAbYRAj7CAQHep32WWSmwN-Ib3qtFEvA9Jz9eRD8FK5FH09NjSHZmySgZGRNzsndhW7KscLGLUy25EOuNRTERaeRq8UTgydp2"
+  }
+}
+
+r2048privatekey.jwk
+RSA private key associated with subsequent objects:
+{
+  "kid": "example.com:r2048",
+  "kty": "RSA",
+  "n": "ptKZyFPStvmOlb0WihOBhlHUr6wFDHC-tW7hJAudfTQ5mHZQpB8PoMz07udZA-dG8dhUIPkmXlp1TgREeYTHdhxhuf0y_GhbpZv5JPYHx3watO-HWO2qYkjRMEcrWhPMdaVkS_Xe_liaMcow4jYoWaFm8VobeYsyVD2bWWdyl4joTEETm1Z47RnnfR15kVhVudVrDzEFmM4nXV_6dmIg184RJE4httwBFxR8qZCQCwTiJmsoyJxfUR0Gs4ePKc5sB0NTkmFZc5klQSitd67RJn2ldhbqE7EpDl4XlIt-UyLJm1guCBltia8Agke7dXuhpB7hQ6LJwY4EjzthkJ8IPw",
+  "e": "AQAB",
+  "d": "KT6KTNAEmb5rdTPxvaOC832J0wD5opDBZcQLH8lLX6go0Tv3Rgxz5bKmn-ZMyL1GegadDiXrSYqd0_MUJuMgGWB8_OnP0D3Q4soEOBIn7DcPt0o9MUxZQsF0DraZzkR02WVRvcIFJucrAEJYAaWYJkjUVbmMb2ltwQwWO21rFHGbpE73nsfr_oAWsZEvKsQZoYm4fh5jVI5-wKyRnKaN1uqAcNgj75cdywCHBVwgEefEgOPM77CDMH0-JumSirQiBfR35-HWRwHwpm09wI6Aqtvgy5bzxvLDDRgrhX4LCPtUHGrUXNJHRKYiHQX6P6bIVuBrHV6VFpyS-5weu0w6kQ",
+  "p": "0KOEHi7Tu0tyh_FC95V-JYR9Su_0PfbgR5ry13Yg5B4y2wW4dCX6x4B7ZyvW7ydhr1XMISPX04jtadaOUTOY24lVEgkvdbC3Ezxb_F_N7BMQWZ675UpW_72vuMlvi876-mYg5WWLFUTbzQB1E6Ix0Qjh9j-Hl9fqpeT-BTHX70k",
+  "q": "zLEOCwacYw_SnQ8yc8PWtMWy-O0HQnmQajVMujL8CxNPirBfqa76IoDWQmk3CdhX6D8aRN_6NAP28gk7g5H3Xa3f4XADtIHdUfQmCQ1yX5yG2X4XlJh1u0oW18qoaakClY8x_o5y6lY2xg-rc93TfgMDYFCw_778FzNk1qbvU0c",
+  "dp": "aQ890xkPY0vNo2i4qQVtHSVHFjoYSi-LpmL_D8IbM-OFBkcuJ8aMLnOjMEOiGpFBHlJc1P9AifN0YYw54-fQfBP-c3OOo3vV5GjLhR0VC2BaJlbJFN_HSUZSOwGsGsGiHf7ZZ8onLBGdgPBPBBDzdug7KI27EJoYPWs_AoyjyIk",
+  "dq": "PIePE4uc615edbtsu_cJouNjjWDqaKnyHrYsPlOdXNkVCHonj9ICffmDYpgignLLbA5dAkkJgCA8Ak7gnoOnlrg4ID4zmklc3UNJjBvB2qw65E35QyPijMPYBXAUZUppTTjPG-ub59ge0msH1Hegdv8FHJJABSDBA0tbYm5zDzk",
+  "qi": "Pf9CrVihTIRd79NS-eAFxeW9eUa6AYWQH8yNVNMDzuCek8_tSqpra8B0wTyN-p8yEyIZTIXKE7DETIJ79DR88ZXEEJgMt36BQRTsh16pd4T7VmxFYgeY0LOHD-bbNaIr1YaxLa6xOdUxuFfxH3w9SSoh5ezBAmBDMgc99T7EQrs"
+}
+
+r2048#rs256@jwk.json
+The following object was signed by the r2048privatekey.jwk key:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "RS256",
+    "publicKey": {
+      "kty": "RSA",
+      "n": "ptKZyFPStvmOlb0WihOBhlHUr6wFDHC-tW7hJAudfTQ5mHZQpB8PoMz07udZA-dG8dhUIPkmXlp1TgREeYTHdhxhuf0y_GhbpZv5JPYHx3watO-HWO2qYkjRMEcrWhPMdaVkS_Xe_liaMcow4jYoWaFm8VobeYsyVD2bWWdyl4joTEETm1Z47RnnfR15kVhVudVrDzEFmM4nXV_6dmIg184RJE4httwBFxR8qZCQCwTiJmsoyJxfUR0Gs4ePKc5sB0NTkmFZc5klQSitd67RJn2ldhbqE7EpDl4XlIt-UyLJm1guCBltia8Agke7dXuhpB7hQ6LJwY4EjzthkJ8IPw",
+      "e": "AQAB"
+    },
+    "value": "IbTdSjKTYiFa-OP4m4wynLLHFxRgY0jwr7lonUIAG8zRpiX9d0ffR_ynGGjchtHH5CtXjfiKtWau0hqejmLqOHzx0I9xcDOLy42aOzBwITU7dElpsXSVYB76i5ekh2pD-swPJ_7E3aIfL1FPDiHjmbxWEjQseifSri4OX27iMqZVjfwIVSA-xKc-_C40r_eDwtB8tdJRaMDnI-Fsu1xf8X7mAiCjhqwRTqEWEySaXN-yGtLgi_ee0OemaBsY7fD2YnL9l9k4fq_A0JwoedRK26VLzoI1HfJ1uK-lrtud0_Ne7IXfZTeZDSKoPHY1LDVzVm0asVvkB10NrLRHO4hDYg"
+  }
+}
+
+r2048#ps256@jwk.json
+The following object was signed by the r2048privatekey.jwk key. Note the use of the RSASSA PSS algorithm:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "PS256",
+    "publicKey": {
+      "kty": "RSA",
+      "n": "ptKZyFPStvmOlb0WihOBhlHUr6wFDHC-tW7hJAudfTQ5mHZQpB8PoMz07udZA-dG8dhUIPkmXlp1TgREeYTHdhxhuf0y_GhbpZv5JPYHx3watO-HWO2qYkjRMEcrWhPMdaVkS_Xe_liaMcow4jYoWaFm8VobeYsyVD2bWWdyl4joTEETm1Z47RnnfR15kVhVudVrDzEFmM4nXV_6dmIg184RJE4httwBFxR8qZCQCwTiJmsoyJxfUR0Gs4ePKc5sB0NTkmFZc5klQSitd67RJn2ldhbqE7EpDl4XlIt-UyLJm1guCBltia8Agke7dXuhpB7hQ6LJwY4EjzthkJ8IPw",
+      "e": "AQAB"
+    },
+    "value": "SJnq3uAhfcDFv5MLCDhmfGE9_QQG5iDoF6urZp4uvOq-wGPDujImXHNs38XMPCQJVvDIf9Pdw1udXJAUCMkuWL0fBpMeBLriydIYNml4FOGJJ3506I3Hqk-zdjVwfBrguHshS1hniMzTqo8dzlPWxgPzU0KTDeg2xTuXOs2rbvENyqym-jHgn_iCMBQIWCwA5nQIxVmVVHNqF_wY5aUJcO1ySSWVsBk7P2_NpHNO_dOPaxdvvCvrbRne226edD4mOb6adtHoIdXVIhpsulkGEefBnqXQYvmjq_62rnCTZCfXTfM2ylp98NNgT_hyj1IN4yA5Wxwq86UP9of9yOxQ4w"
+  }
+}
+
+r2048#rs256@kid.json
+The following object was signed by the r2048privatekey.jwk key while the public key is identified by a keyId property:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "RS256",
+    "keyId": "example.com:r2048",
+    "value": "Ra3r-1ZGBh-UkMzjyS70mRuw3LmC7E8TmG5y0V7EIZrnvz5lfqXl0DL20ftSpbwzFPAlkH_iywKH9g85e5TYQUlMsI7ptsjNURQv-2dRbOq4UhCjbxA8T33424tfraHMutKhJ4vhHhvDgYLqDg9Pwh2RrgcXrBc5VgCAFSR2mhzkjzyJlrOekByf6q9MyPpMjok6wBDkEoWQ8c2vEdEbck6kARYEr3AeOTsnsUptkgbsJ2xQ4ZK4Al93LMW6xiuIa1ATuYwNUilWDhJqYUnAEA54uYRNEFULYqLRjBIGipnFtz7-802K1DfjUtHSL7unwZRNg5CtFHlWAeJ8rhv-mA"
+  }
+}
+
+r2048#rs256@imp.json
+The following object was signed by the r2048privatekey.jwk key while the public key is supposed to be implicitly known by the verifier:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "RS256",
+    "value": "X6k3LmtM2UT4N13yu-vUBdM84hfYZDbxRdt49WacS3OAbYzHE33XZK5i8J7enIzvZEggxeIhQ1Wu2LpTqxNgZEjAo7qYNl4W3rilme0KNH-NnB-4BHQawqCv9_uzKnFt3MwK_nyc-Wl-7ngKrL2LvbLgY4i1GM8u0vBB_92QDMYrqVC3S6nRh9IUaQcLShyAiSMa6BwbEg0mAZgGZxMsu2tEXvNyyrYV0Z4Fsl_SMVon_kXCAFuJB-WpdpIan6GGQ1wrSkHXu4OZjvabO0qIqkE3aP2WWUPCfHbtI-Z0Iq4N3U5D56-Y8Q6OUWBWkd4kt3dAD1Q2OBbA42sKUGROnw"
+  }
+}
+
+r2048#rs256@cer.json
+The following object was signed by the r2048privatekey.jwk key while the public key is featured in a certificatePath:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "RS256",
+    "certificatePath": [
+      "MIICrTCCAhCgAwIBAgIGAXQvSnr8MAoGCCqGSM49BAMEMBYxFDASBgNVBAMTC1Rlc3QgU3ViIENBMB4XDTE4MDEwMTAwMDAwMFoXDTMwMTIzMTIzNTk1OVowODE2MDQGA1UEAxMtVGVzdCBjZXJ0aWZpY2F0ZSBtYXRjaGluZyByMjA0OHByaXZhdGVrZXkucGVtMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAptKZyFPStvmOlb0WihOBhlHUr6wFDHC-tW7hJAudfTQ5mHZQpB8PoMz07udZA-dG8dhUIPkmXlp1TgREeYTHdhxhuf0y_GhbpZv5JPYHx3watO-HWO2qYkjRMEcrWhPMdaVkS_Xe_liaMcow4jYoWaFm8VobeYsyVD2bWWdyl4joTEETm1Z47RnnfR15kVhVudVrDzEFmM4nXV_6dmIg184RJE4httwBFxR8qZCQCwTiJmsoyJxfUR0Gs4ePKc5sB0NTkmFZc5klQSitd67RJn2ldhbqE7EpDl4XlIt-UyLJm1guCBltia8Agke7dXuhpB7hQ6LJwY4EjzthkJ8IPwIDAQABo10wWzAJBgNVHRMEAjAAMA4GA1UdDwEB_wQEAwID-DAdBgNVHQ4EFgQU7EPtQjf0D19X9PWV4i-XcGdsJn0wHwYDVR0jBBgwFoAUoxFlz13AUKdL5RnhdntUmrdPl4owCgYIKoZIzj0EAwQDgYoAMIGGAkFEUasikL7bwPS_q7P9N6ncoBU0Irmpci_jkyMiK7B91mUwwg3JAv2N9b4ba9Qi6H-w2DgFyRftQFrLizxMxk8I2QJBORQt-3GUVQCIQ50F4s7PsXOorJ83tVNFp-vlZQs3z2d_LsUi8CsbxY5T9dSKPmIrXuXEAVDozS0rgdsWG_CBQVM",
+      "MIIDgzCCAWugAwIBAgIBAzANBgkqhkiG9w0BAQ0FADAXMRUwEwYDVQQDEwxUZXN0IFJvb3QgQ0EwHhcNMTYwNzEwMTAwMDAwWhcNMzkwNzEwMDk1OTU5WjAWMRQwEgYDVQQDEwtUZXN0IFN1YiBDQTCBmzAQBgcqhkjOPQIBBgUrgQQAIwOBhgAEAPc4WO7RVjN58NCzHfz5yDrrl_ulWhyYdYgPz-13bR3qiC0TguuXRN7Ye9cXxDPwfZNiPui5jEzvjkkEFeFRYc_2AMgl7WOo9JWQjf0RQXMxqlnwjUa5UoKst9NZOPn-tTcq6k1nkd3LZKRLfLZq5qGWm5mQWLf73WHFe1ELES5oO1Zco2MwYTAPBgNVHRMBAf8EBTADAQH_MA4GA1UdDwEB_wQEAwIBBjAdBgNVHQ4EFgQUoxFlz13AUKdL5RnhdntUmrdPl4owHwYDVR0jBBgwFoAUQI50o7LJMzle8DBu7lOobUF1IcowDQYJKoZIhvcNAQENBQADggIBAB2a9M8LkaTQh5iZW8-vpkFdiu5sFcOUWKxtFZ7FImuFMPkJbUhHBAYjnSXiLb0SyqWwh4QlO2qSpGqxEjpuGtam-maKsvKxMLwybPgv18-bsbmM7ZjBG7MQYox5P7jFYZB4U4I3Pn0kQK6Bdr18Ua8EP8YkTKyJS6Gmohl6iTtdsgOdJ5EHjzC0GhzwiR3pXKDX44LO0aK6lERWX3uOAqZazB-K8qhFnh1MA6_p-q1zVcEIuPcfKmi-8wBOjqHhao8ThmB8afpolWfFrEx23e5ybUe4FPAGMh_5lRP0pA7yHdethk3J5KKScmBioFDm0d8NxlojjMXKHIe0hwJQB6YJjEPlFw1-U0a4l4IbHEFIywuTmRP0-gCeiznnHkg96JvJRDiQt8sj2DOaCi784HlbVQQQzTBd8VJoCJRgG9CChXqcZn5T-wThGviuMzREHpteSCE2AyZ-7_loaKsWV_riTqv7GgGVUnke8p0XNjtzMzD-iJVNvLKNhpt4w84jB11TGqnvuJ3i73e-hg96yZITAhMgUSXpn_cZtCPl3oHu7Cjpu78vyuA0QatYCEBPMAlUfQs-exA8nkV40giCBc3muOpsTjJW1-vQrxpFGkXvK4s9wuzqVrrbXRGNYNCiO6ZrEDJJ3_Ms24bE4JJ_uPnhy7LqtmuUEhe3z3Z1Sx7I"
+    ],
+    "value": "WIJwLjU1TxyQ-8Xdqs7yPwXVZVPEfYWDsMgB_BOfN85iwdz42sMzAcCPjsKTRl4vFwsTomQOt9fRNphBXAQG22KPiJuWtQv-hHW-vzfLghThmGGrNVbrAleWnRnfOWlS0jSl5GEZUH2W_OLzfpYaR2EU3JF8RxweO2W1mpWiUW18PeBCEGJ2OSKe3lezdg--2x8oxTqG5WfBcq6FV-B0lE36ulD2ZqFqlSpJq9JxjoTXKSUdCgUPmOt1OePvgkFnzEkHBvF6KMTVEFVWxud53bkPlCZH3eGpqR0d4JxKT4JSxAvgGfOuTDxDTprulzm2iVNr-8Cd6W4-fQZcRsbvgA"
+  }
+}
+
+ed25519privatekey.jwk
+Ed25519 private key associated with subsequent objects:
+{
+  "kid": "example.com:ed25519",
+  "kty": "OKP",
+  "crv": "Ed25519",
+  "x": "_kms9bkrbpI1lPLoM2j2gKySS-k89TOuyvgC43dX-Mk",
+  "d": "0flr-6bXs459f9qwAq20Zs3NizTGIEH5_rTDFoumFV4"
+}
+
+ed25519#ed25519@jwk.json
+The following object was signed by the ed25519privatekey.jwk key:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "Ed25519",
+    "publicKey": {
+      "kty": "OKP",
+      "crv": "Ed25519",
+      "x": "_kms9bkrbpI1lPLoM2j2gKySS-k89TOuyvgC43dX-Mk"
+    },
+    "value": "UtN9-gMgTkfAdBJRX4gi0s6iKYiilO5EmXRD4KRSEnPKo5Og1ltbGYZecdJqKphCXkboIE_pecfszHEQXeqqDA"
+  }
+}
+
+ed25519#ed25519@kid.json
+The following object was signed by the ed25519privatekey.jwk key while the public key is identified by a keyId property:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "Ed25519",
+    "keyId": "example.com:ed25519",
+    "value": "Z5GCvK_W6s1aiEVHlLlqlc2Q-Hq07lOkSIjKVdhjwBHnATwevYfZ8GbooHjjbN8Eb0JN-E4zT40dbGi6TnjPCA"
+  }
+}
+
+ed25519#ed25519@imp.json
+The following object was signed by the ed25519privatekey.jwk key while the public key is supposed to be implicitly known by the verifier:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "Ed25519",
+    "value": "VIjBJ-x4A7wPf0QiPBEvLEcPLfuMPJzaxooHPk3I65Vst2j1YYZvfc7T83oiujkUyCRbJrY5qX4rCk-OVFEmCw"
+  }
+}
+
+ed25519#ed25519@cer.json
+The following object was signed by the ed25519privatekey.jwk key while the public key is featured in a certificatePath:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "Ed25519",
+    "certificatePath": [
+      "MIIBtjCCARigAwIBAgIGAXQ5PT0LMAoGCCqGSM49BAMEMBYxFDASBgNVBAMTC1Rlc3QgU3ViIENBMB4XDTE4MDEwMTAwMDAwMFoXDTMwMTIzMTIzNTk1OVowOjE4MDYGA1UEAxMvVGVzdCBjZXJ0aWZpY2F0ZSBtYXRjaGluZyBlZDI1NTE5cHJpdmF0ZWtleS5wZW0wKjAFBgMrZXADIQD-Saz1uStukjWU8ugzaPaArJJL6Tz1M67K-ALjd1f4yaNdMFswCQYDVR0TBAIwADAOBgNVHQ8BAf8EBAMCA_gwHQYDVR0OBBYEFBIXdsxytWQHewcvr41VC6jGFG8KMB8GA1UdIwQYMBaAFKMRZc9dwFCnS-UZ4XZ7VJq3T5eKMAoGCCqGSM49BAMEA4GLADCBhwJCAQs-6SoC21pqz5NvalnODGL1-sAeewBhUeWBQDymdrbfpgLIRSgbvr5f_F4shQ1ehJLvWtZ5IQd2J-fjW4DxiahcAkENk5ZX_1BGeBw93EgCzwy27Bt6sMRGfnFI8sGedkYFS_T6dasKq7nNsP3rN2a3V5OwIR7T35Nr16liZwevj4oyEQ",
+      "MIIDgzCCAWugAwIBAgIBAzANBgkqhkiG9w0BAQ0FADAXMRUwEwYDVQQDEwxUZXN0IFJvb3QgQ0EwHhcNMTYwNzEwMTAwMDAwWhcNMzkwNzEwMDk1OTU5WjAWMRQwEgYDVQQDEwtUZXN0IFN1YiBDQTCBmzAQBgcqhkjOPQIBBgUrgQQAIwOBhgAEAPc4WO7RVjN58NCzHfz5yDrrl_ulWhyYdYgPz-13bR3qiC0TguuXRN7Ye9cXxDPwfZNiPui5jEzvjkkEFeFRYc_2AMgl7WOo9JWQjf0RQXMxqlnwjUa5UoKst9NZOPn-tTcq6k1nkd3LZKRLfLZq5qGWm5mQWLf73WHFe1ELES5oO1Zco2MwYTAPBgNVHRMBAf8EBTADAQH_MA4GA1UdDwEB_wQEAwIBBjAdBgNVHQ4EFgQUoxFlz13AUKdL5RnhdntUmrdPl4owHwYDVR0jBBgwFoAUQI50o7LJMzle8DBu7lOobUF1IcowDQYJKoZIhvcNAQENBQADggIBAB2a9M8LkaTQh5iZW8-vpkFdiu5sFcOUWKxtFZ7FImuFMPkJbUhHBAYjnSXiLb0SyqWwh4QlO2qSpGqxEjpuGtam-maKsvKxMLwybPgv18-bsbmM7ZjBG7MQYox5P7jFYZB4U4I3Pn0kQK6Bdr18Ua8EP8YkTKyJS6Gmohl6iTtdsgOdJ5EHjzC0GhzwiR3pXKDX44LO0aK6lERWX3uOAqZazB-K8qhFnh1MA6_p-q1zVcEIuPcfKmi-8wBOjqHhao8ThmB8afpolWfFrEx23e5ybUe4FPAGMh_5lRP0pA7yHdethk3J5KKScmBioFDm0d8NxlojjMXKHIe0hwJQB6YJjEPlFw1-U0a4l4IbHEFIywuTmRP0-gCeiznnHkg96JvJRDiQt8sj2DOaCi784HlbVQQQzTBd8VJoCJRgG9CChXqcZn5T-wThGviuMzREHpteSCE2AyZ-7_loaKsWV_riTqv7GgGVUnke8p0XNjtzMzD-iJVNvLKNhpt4w84jB11TGqnvuJ3i73e-hg96yZITAhMgUSXpn_cZtCPl3oHu7Cjpu78vyuA0QatYCEBPMAlUfQs-exA8nkV40giCBc3muOpsTjJW1-vQrxpFGkXvK4s9wuzqVrrbXRGNYNCiO6ZrEDJJ3_Ms24bE4JJ_uPnhy7LqtmuUEhe3z3Z1Sx7I"
+    ],
+    "value": "behDQ8IZIZEzlUvRrl0WW6tsxEWKH68VYH_Dzou2roTSgxTH5pqoK-qz_6m5uXqHG5jPBUGGVLBnr5d4HTj3Ag"
+  }
+}
+
+ed448privatekey.jwk
+Ed448 private key associated with subsequent objects:
+{
+  "kid": "example.com:ed448",
+  "kty": "OKP",
+  "crv": "Ed448",
+  "x": "IUkRrGrNQFnHA-pIcgwzTxyL4BlWyHqC6LkZbgyHMsM14mC2NfpW9QV_Ao7mkQXIZM2OCgCimEQA",
+  "d": "EzABSeOFsw-6ydqO3YW4ZPONZqEOQ-0DARQ1U-v_jOCyXPI6FkGS1x1a5CAVY2HNTcfNYGKBriKC"
+}
+
+ed448#ed448@jwk.json
+The following object was signed by the ed448privatekey.jwk key:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "Ed448",
+    "publicKey": {
+      "kty": "OKP",
+      "crv": "Ed448",
+      "x": "IUkRrGrNQFnHA-pIcgwzTxyL4BlWyHqC6LkZbgyHMsM14mC2NfpW9QV_Ao7mkQXIZM2OCgCimEQA"
+    },
+    "value": "7etBe_-_lSMU1OXH38PRmT3MHvnf0IQcvX2GX-l16Ax7_-V7l0TDH31-ioXo0B8PV75PspWEm3-AVHmKpIUAbb8FU1k7KJcCc1m0HQOvbiDlIh3j_G10wrv5edpjDWBQ8Xjek94vGpKM7kA9Y--EkS4A"
+  }
+}
+
+ed448#ed448@kid.json
+The following object was signed by the ed448privatekey.jwk key while the public key is identified by a keyId property:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "Ed448",
+    "keyId": "example.com:ed448",
+    "value": "OCU7mH_M9lf1hOKMhQBTqOOhSQRiKg9GyIGk-D1c1T5bnon7v0Mfi879N4vtA4KSuExxfUUldnQAaEWNLdTgVp8ojm2WVieRAwgAlxddJ9KMqdcXoi-SJxLByySUG-UJj3MiJmW7hhRzergMTj31-y4A"
+  }
+}
+
+ed448#ed448@imp.json
+The following object was signed by the ed448privatekey.jwk key while the public key is supposed to be implicitly known by the verifier:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "Ed448",
+    "value": "SUjAWwmGUVzFkjUBs4FPCgrikPWyivcqLIlzADGgT8m4LwAvmLDSTdn8URgML5egnUDqLzBHeGqA_H_t6z-ziw6EkgSdj88Uf_q2psWsQdltfe4EXuGjCgK5VTGgO1leN952xO9gjJD2KvofANdKsRsA"
+  }
+}
+
+ed448#ed448@cer.json
+The following object was signed by the ed448privatekey.jwk key while the public key is featured in a certificatePath:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "Ed448",
+    "certificatePath": [
+      "MIIBzTCCAS-gAwIBAgIGAXQ5PVxGMAoGCCqGSM49BAMEMBYxFDASBgNVBAMTC1Rlc3QgU3ViIENBMB4XDTE4MDEwMTAwMDAwMFoXDTMwMTIzMTIzNTk1OVowODE2MDQGA1UEAxMtVGVzdCBjZXJ0aWZpY2F0ZSBtYXRjaGluZyBlZDQ0OHByaXZhdGVrZXkucGVtMEMwBQYDK2VxAzoAIUkRrGrNQFnHA-pIcgwzTxyL4BlWyHqC6LkZbgyHMsM14mC2NfpW9QV_Ao7mkQXIZM2OCgCimEQAo10wWzAJBgNVHRMEAjAAMA4GA1UdDwEB_wQEAwID-DAdBgNVHQ4EFgQU4lfs3v1Em5Ew0LJyxdcfr8HAxn0wHwYDVR0jBBgwFoAUoxFlz13AUKdL5RnhdntUmrdPl4owCgYIKoZIzj0EAwQDgYsAMIGHAkEG894Lsr2Izbj1DVgW1QkJ2J6L5Xjd3F8ma-aPzV2XuPaWg_tR4FLFEsO0swPoTa2JNoki1sFQ6LVZGRVisDGuyQJCAcJLYxkUL7iZ8JquZQrjx7BL57m00uz1FXVL9nPgDqbqE4vv5ZEsE9-lHUjekLqrWS2oLYUpEL2KnqAwdwZ481cN",
+      "MIIDgzCCAWugAwIBAgIBAzANBgkqhkiG9w0BAQ0FADAXMRUwEwYDVQQDEwxUZXN0IFJvb3QgQ0EwHhcNMTYwNzEwMTAwMDAwWhcNMzkwNzEwMDk1OTU5WjAWMRQwEgYDVQQDEwtUZXN0IFN1YiBDQTCBmzAQBgcqhkjOPQIBBgUrgQQAIwOBhgAEAPc4WO7RVjN58NCzHfz5yDrrl_ulWhyYdYgPz-13bR3qiC0TguuXRN7Ye9cXxDPwfZNiPui5jEzvjkkEFeFRYc_2AMgl7WOo9JWQjf0RQXMxqlnwjUa5UoKst9NZOPn-tTcq6k1nkd3LZKRLfLZq5qGWm5mQWLf73WHFe1ELES5oO1Zco2MwYTAPBgNVHRMBAf8EBTADAQH_MA4GA1UdDwEB_wQEAwIBBjAdBgNVHQ4EFgQUoxFlz13AUKdL5RnhdntUmrdPl4owHwYDVR0jBBgwFoAUQI50o7LJMzle8DBu7lOobUF1IcowDQYJKoZIhvcNAQENBQADggIBAB2a9M8LkaTQh5iZW8-vpkFdiu5sFcOUWKxtFZ7FImuFMPkJbUhHBAYjnSXiLb0SyqWwh4QlO2qSpGqxEjpuGtam-maKsvKxMLwybPgv18-bsbmM7ZjBG7MQYox5P7jFYZB4U4I3Pn0kQK6Bdr18Ua8EP8YkTKyJS6Gmohl6iTtdsgOdJ5EHjzC0GhzwiR3pXKDX44LO0aK6lERWX3uOAqZazB-K8qhFnh1MA6_p-q1zVcEIuPcfKmi-8wBOjqHhao8ThmB8afpolWfFrEx23e5ybUe4FPAGMh_5lRP0pA7yHdethk3J5KKScmBioFDm0d8NxlojjMXKHIe0hwJQB6YJjEPlFw1-U0a4l4IbHEFIywuTmRP0-gCeiznnHkg96JvJRDiQt8sj2DOaCi784HlbVQQQzTBd8VJoCJRgG9CChXqcZn5T-wThGviuMzREHpteSCE2AyZ-7_loaKsWV_riTqv7GgGVUnke8p0XNjtzMzD-iJVNvLKNhpt4w84jB11TGqnvuJ3i73e-hg96yZITAhMgUSXpn_cZtCPl3oHu7Cjpu78vyuA0QatYCEBPMAlUfQs-exA8nkV40giCBc3muOpsTjJW1-vQrxpFGkXvK4s9wuzqVrrbXRGNYNCiO6ZrEDJJ3_Ms24bE4JJ_uPnhy7LqtmuUEhe3z3Z1Sx7I"
+    ],
+    "value": "UKHqM3DL39SMBDtYwaR3ynvvKaeiZdrLHBvnmMHK7k0O35DkzV1-aYHjbFvrFX9yVYBWd1ieCEuAGI7NnqGDjNOGm1KKmcR9i7qpjPrh_SZJ_oflRA8L4MgxdyLJRRzKz8mT9z60HpmC_GQlOiMa0QcA"
+  }
+}
+HMAC key named "a256bitkey" here provided in hexadecimal notation:
+7fdd851a3b9d2dafc5f0d00030e22b9343900cd42ede4948568a4a2ee655291a
+
+a256#hs256@kid.json
+The following object was signed by the key above:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "HS256",
+    "keyId": "a256bitkey",
+    "value": "GJ6Jhb-PfHpN6KPcjHBNxbO9j56ShgUh13JfmZ3ORkI"
+  }
+}
+HMAC key named "a384bitkey" here provided in hexadecimal notation:
+37b7daeedc3403eb865a506c19597a37582ad5059e08438ada8bf544ee44bb3024a15f8fa191bbe7a533a56c9fc1db1d
+
+a384#hs384@kid.json
+The following object was signed by the key above:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "HS384",
+    "keyId": "a384bitkey",
+    "value": "FjkRAZS-HsGsC_WPKsF2fmaNO7CPp90asbgXfOPQjolyK_qQaOuJH_u7PgonjzN9"
+  }
+}
+HMAC key named "a512bitkey" here provided in hexadecimal notation:
+83d26e96b71a5dd767c215f201ef5884fb03dfe5a8ee9612d4e3c942e84d45dfdc5801cb8379958f3af600d68eba1a14e945c90f16556
+71f042cea7b34d53236
+
+a512#hs512@kid.json
+The following object was signed by the key above:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "algorithm": "HS512",
+    "keyId": "a512bitkey",
+    "value": "VJHJXrZhVMMWTKTJktmdE5J4xBjKwtdf25eItui4fIGuyYsiZD5M9n573WZ0XgM9q48gG1KpTee4q8LCW4a7qQ"
+  }
+}
+
+p256#es256,r2048#rs256@mult-jwk.json
+The following object was signed by multiple signatures (see Multiple Signatures) using the p256privatekey.jwk and r2048privatekey.jwk keys:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "signers": [{
+      "algorithm": "ES256",
+      "publicKey": {
+        "kty": "EC",
+        "crv": "P-256",
+        "x": "6BKxpty8cI-exDzCkh-goU6dXq3MbcY0cd1LaAxiNrU",
+        "y": "mCbcvUzm44j3Lt2b5BPyQloQ91tf2D2V-gzeUxWaUdg"
+      },
+      "value": "Nmkfbz5AfQbLW7m3uZrc12yrXoP-skILw58Z9KRPFW0OYyrnuagJTVvKAfpaZ6SznQ69IGM_J8bBnsuois6JAg"
+    },{
+      "algorithm": "RS256",
+      "publicKey": {
+        "kty": "RSA",
+        "n": "ptKZyFPStvmOlb0WihOBhlHUr6wFDHC-tW7hJAudfTQ5mHZQpB8PoMz07udZA-dG8dhUIPkmXlp1TgREeYTHdhxhuf0y_GhbpZv5JPYHx3watO-HWO2qYkjRMEcrWhPMdaVkS_Xe_liaMcow4jYoWaFm8VobeYsyVD2bWWdyl4joTEETm1Z47RnnfR15kVhVudVrDzEFmM4nXV_6dmIg184RJE4httwBFxR8qZCQCwTiJmsoyJxfUR0Gs4ePKc5sB0NTkmFZc5klQSitd67RJn2ldhbqE7EpDl4XlIt-UyLJm1guCBltia8Agke7dXuhpB7hQ6LJwY4EjzthkJ8IPw",
+        "e": "AQAB"
+      },
+      "value": "JqJPRtttK-_whpZthVGZne1MONlMh5co7s8IWsI1-HAlqyYQTqmIIaIVBUc00MKxGZkle99d7GuF2GGKb_7aJtdsA5ZNUYHzYReaX0xg6TKcM9ppWqeFQx_DXR6GlGv3NNhNqBy2uCT_vnwErlWlNe_KQd3KJeQDrqHVQHmvCrUnx2ShXQp6MhLkZ6mrAN_J2I9z-i6NWFRG91aXfnupKvmrUZ8834ASbo5i2uEXbT8VeG9Ihuwi9iP7hhLmGd3ocUTsdtB4jTU2js7Q-F24_99SbIXW50Tfrp_TZWIjF9CqW8278OE4kGsf9Qub4VkR0b7MXYFRsE0fxTw4rdPV7A"
+    }]
+  }
+}
+
+p256#es256,r2048#rs256@mult-exts-kid.json
+The following object was signed by multiple signatures (see Multiple Signatures) using the p256privatekey.jwk and r2048privatekey.jwk keys while the public keys are identified by keyId properties. There is also an extensions list. Note that this JSF features optional extension arguments (the second signature lacks one element):
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "signers": [{
+      "algorithm": "ES256",
+      "keyId": "example.com:p256",
+      "otherExt": "Cool Stuff",
+      "https://example.com/extension": {
+        "life-is-great": true
+      },
+      "value": "ekIi8iJ0nbzbwbjaU2uqtKLwM_oPRfNMwPPE-ULU9VlOVAQofuTidP9mOMQCm6PUFvbEQqEKO5M2b8sOIFKRaw"
+    },{
+      "algorithm": "RS256",
+      "keyId": "example.com:r2048",
+      "otherExt": "Other Data",
+      "value": "jBFwsK-AalChwijrUGqAsOOfMrZUh6pPvKuPVwti3W_jSk5hTBo6gq1njvvbiV4MtPSFyBask0yeb7YMjpT7PpuqMRvxlY7yWLP8D827jAMRwetAzy1y63TMDPa2-OYM8JD2qY7DAb56iiNUIkhvXOTDldmKARpiwes6UjMdVlTw-M38P4-Bx0x1J7CQ4P6B0WU-WPzmMZoC1d-f7zPso3UwMXzgEpY5fWYO_KcHibj01rFTgCVuXVQJHXKqWlQTgtFvod9nS64eSBs3p8NULDkyCtbxphzQ_yDKDrFfGMRUrCkUVo39nxKF7sKEEqNf7jdq4YzTGFg-ZGUVzSzKzA"
+    }],
+    "extensions": ["otherExt", "https://example.com/extension"]
+  }
+}
+
+p256#es256,r2048#rs256@mult-excl-kid.json
+The following object was signed by multiple signatures (see Multiple Signatures) using the p256privatekey.jwk and r2048privatekey.jwk keys while the public keys are identified by keyId properties. There is also an excludes list:
+{
+  "mySignedData": "something",
+  "myUnsignedData": "something else",
+  "signature": {
+    "signers": [{
+      "algorithm": "ES256",
+      "keyId": "example.com:p256",
+      "value": "E6rT21XjoXA-g00vmO5vQF-KKZnrr14jDsQ4mEdhJtdMTT0X0eMrJeDx_Prm0emHjttjid9UqIW25eEPS7ux4g"
+    },{
+      "algorithm": "RS256",
+      "keyId": "example.com:r2048",
+      "value": "XyD8ZqqhknW-l8ht_ryvhp8QDuKqB8dcs5F-vDKKMWXVbiWFSDNYpoUsEdHA1P1GU0med2fVCGHNLar2eiX_kXn9gApqwwi_aDikpCEJLDcEGdajpIc_w2q3DgsYoIyoYWDOtcOpvzgrW5bMMi-hB3xyZ21msTA122zdroqDzFmILx6djpQgqZXry72HycGzvm-yT9DylfNW3B0g3esoW7abztrwp-e6KE1UOXPKxdMvuJu52lCgt2sZSdolbXudc0GH6nBUTNXehR1VbGhW0vtO9xXunP4KhCFNbOSf83Mz_3Yf2rO6rGCTFsgWvQ6cAaCt-v18MddkuLX68goOxQ"
+    }],
+    "excludes": ["myUnsignedData"]
+  }
+}
+
+p256#es256,r2048#rs256@chai-jwk.json
+The following object was signed by a chain of signatures (see Signature Chains) using the p256privatekey.jwk and r2048privatekey.jwk keys:
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "chain": [{
+      "algorithm": "ES256",
+      "publicKey": {
+        "kty": "EC",
+        "crv": "P-256",
+        "x": "6BKxpty8cI-exDzCkh-goU6dXq3MbcY0cd1LaAxiNrU",
+        "y": "mCbcvUzm44j3Lt2b5BPyQloQ91tf2D2V-gzeUxWaUdg"
+      },
+      "value": "VJKH2mR8qwq5vPLbwA9i-IYoSdI8lLQ9Orz9vANsOCMw0FQB4KjEuBfdKJ1D2JSFoX7KcaMvCz24sT5cbeN8TA"
+    },{
+      "algorithm": "RS256",
+      "publicKey": {
+        "kty": "RSA",
+        "n": "ptKZyFPStvmOlb0WihOBhlHUr6wFDHC-tW7hJAudfTQ5mHZQpB8PoMz07udZA-dG8dhUIPkmXlp1TgREeYTHdhxhuf0y_GhbpZv5JPYHx3watO-HWO2qYkjRMEcrWhPMdaVkS_Xe_liaMcow4jYoWaFm8VobeYsyVD2bWWdyl4joTEETm1Z47RnnfR15kVhVudVrDzEFmM4nXV_6dmIg184RJE4httwBFxR8qZCQCwTiJmsoyJxfUR0Gs4ePKc5sB0NTkmFZc5klQSitd67RJn2ldhbqE7EpDl4XlIt-UyLJm1guCBltia8Agke7dXuhpB7hQ6LJwY4EjzthkJ8IPw",
+        "e": "AQAB"
+      },
+      "value": "YhGrlUD-wwoMLxTgZcDLlRq_dlUV300yffV6ejjbxhszocSI1qGu8Yn0p1vVTfgxPfR1VErQ_ME-XFAfck1_1vrrrWdv9Vg5SzHrhu5YnJAhT7QUq3gR1s3iH9nS9xcA7HB3nuYc94z_vfDY2s3u-q-858Q6jnIGy0ejpOeEK7jSqwTbDkwRo5tguXmArMQHY92NB8Pt2hI_11ZJH1CuShKixTtKP6DOu8Q8f8wgjC2AHcTjogeW7bMcH6k4kjdQGkwWWHSCjLVTxqxkpMcdkn2gaFBtaxzWd7kXAxMF8MyjoXV_J-cQn5fU6uImR8MbMVYUmpPMVbvToEfXSZBiuw"
+    }]
+  }
+}
+
+p256#es256,r2048#rs256@chai-exts-kid.json
+The following object was signed by a chain of signatures (see Signature Chains) using the p256privatekey.jwk and r2048privatekey.jwk keys while the public keys are identified by keyId properties. There is also an extensions list. Note that this JSF features optional extension arguments (the second signature lacks one element):
+{
+  "now": "2019-02-10T11:23:06Z",
+  "name": "Joe",
+  "id": 2200063,
+  "signature": {
+    "chain": [{
+      "algorithm": "ES256",
+      "keyId": "example.com:p256",
+      "otherExt": "Cool Stuff",
+      "https://example.com/extension": {
+        "life-is-great": true
+      },
+      "value": "3ygfa_2Ju-SP_qBwt2c4GoccIenAFvSDFfpdWZ_FqGknt0h97DIflyK3EqKLa3YwHbWO45mg_OytKq4W-73rIg"
+    },{
+      "algorithm": "RS256",
+      "keyId": "example.com:r2048",
+      "otherExt": "Other Data",
+      "value": "CzaRfxTFWn_aKiMasqPChd9mX88HxsA-cfN_NW1c7k91dlzPlcmyg_UQMCrdRjhjTO0NRbAUVdqvgRqQJpei71-24VMkbUxC3LVzswnxAtM3aaiGIJgvbC7Xj_DbX8g5ayJ1BfxMW2iZVyghUQN2M-dt8t7ug6GLAEPqx7Rbvch72mznwrZuK94vrgxc0BEDtoCZvvFoXev6QhasqNdzuvlRQEiaasdtBs83iJ1hDR5HasRIzkhftX60EU_3dT-_v_y7FmohBADerx3N1qLGrbjPpCYgh4pSclyP24qHwQvBYX3dtnelDDq368J8IQ7pDLx9rlXJBNZLPyzLPrEQyA"
+    }],
+    "extensions": ["otherExt", "https://example.com/extension"]
+  }
+}
+
+rootca.pem
+The certificate based signatures share a common root (here supplied in PEM [RFC7468] format), which can be used for path validation:
+-----BEGIN CERTIFICATE-----
+MIIFDDCCAvSgAwIBAgIBATANBgkqhkiG9w0BAQ0FADAXMRUwEwYDVQQDEwxUZXN0IFJvb3QgQ0Ew
+HhcNMTUwNzEwMTAwMDAwWhcNNDAwNzEwMDk1OTU5WjAXMRUwEwYDVQQDEwxUZXN0IFJvb3QgQ0Ew
+ggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDLLlZKOsv1XsTw8brUyqZTue8bym6ELH0y
+SUmsYb7xwwlp1KjHT0LLidEeDWA6uDy3D6/4vSkOIcQ4LnR5dDHInxFEFk8sx1eFR5xDsLMPN76K
+rfGFQ3h1d366R56Qi0SL6ssrrYWGec4ey7m2qyzEvgYW1ZYXucyvEbAJtxljx3000uo6rOmVkV4N
+83IfTvA8JqXHvpqluNRvtCJ1zXF7pKJXO3hN1fpL/AoWk6ApuW+q37MZpZqKuHDOlM/KdULjKhyh
+YQ6zfsd8oif3FeWfkYrYU2Lh62gej6Jpd5PrD1dqZ25dEQFqWXtjgxQ2MfWg2RrJkpNnpKZidpf5
+Q4oWFNQBEBXwIseuviOOY7PX2OxZS2MIRyaC2ej+ZM1BvGT7f1sngiWYzh5Mo1YGOt2Z2i5La8oL
+ubqFiv3a9ehF2vkxUReKq9KEDA3t4KhBPggz5dKqv0uD3x4qOewrrIW7aUS0BPTT5ucmYplVY3li
+3A5NJoKVfYwwk8KFvzjqtPmDsq/3chQ+M+uHtfVWeCyOr57d67BsrlbgYpFqb7YXGa7lXlW120VE
+eSgItrZ5N/qcBDPJ2c0oGfnoIJvKB8MkwtivtT0XoY/XhqeL5+rmP1BaqU00o8E2wUWd1cSSFC8B
+LYN1lPXL1zMWettJ5T/ER+zZ5OOx1aSr/HMx2TuBpwIDAQABo2MwYTAPBgNVHRMBAf8EBTADAQH/
+MA4GA1UdDwEB/wQEAwIBBjAdBgNVHQ4EFgQUQI50o7LJMzle8DBu7lOobUF1IcowHwYDVR0jBBgw
+FoAUQI50o7LJMzle8DBu7lOobUF1IcowDQYJKoZIhvcNAQENBQADggIBACBuhOG4punKz2Kd8TjB
+SttEubQL0LBq3TPaFidsxgbshwVwSlCPvab1U4vp/mNPN5LpUFpe9dPY9V5JAng62JTdPar/6VQ6
+AM0CaqQFY9nWRz5wcxjVD6Dz07L44twhZvfl4ceqcyQs7Qw0b4853sWi2//YrNWSH//MgC/6WUIx
+jtRAYiHhABQhnn5KTCKTtZHE+6LZoXR4OlxAT0bOabNL8zVcFBw8SyzU9vKF0iHmmHXlbw4nqUw1
+lvle8EwKUhwekhSNMb7ZQZr3i7jT4Hq24cFarjMrLzcgykNVKaAAIVZEUy8qw85kbfE8p0A3Ota8
+oGR1oyW9a2XGh0SsmNDF7SPEGM7Q+lvHix53lL/F2M/ZMaC2yNOiAVxxanCbE68vxJjaIJPDhUsk
+NcFZ5jLqiA/WDDA7A6/K5QRVy+Gp1uKC+ENKkCncGueP35iv6tLdfLTPkAIndfcQNbQ2vel1UJ+C
+ay6CZ41NPLcOYT80oZ0Gc1f3+ZblQCgiW673aBBmG04HiGrs3Sc3VEqXadfw9sJhzapSCF14vh3y
+ogXC6uTAL/ziJ2ilzfLlU/YTrZBSWQfgIFDlow1gqeTuZXgOGuMLLbHr40Ydc9gELbKxczPTC2sz
++Xr+zNuVNEvUuvuM0S+yVXJAog+wvhksymVf4NGUkZK3psV9y7fPhdXp
+-----END CERTIFICATE-----
